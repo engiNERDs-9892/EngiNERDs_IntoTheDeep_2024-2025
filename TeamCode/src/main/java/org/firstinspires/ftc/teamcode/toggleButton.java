@@ -9,7 +9,7 @@ public abstract class toggleButton {
             FALLING,
     };
     private Edge _edge;
-    public void toggleButton(Edge edge){
+    public toggleButton(Edge edge){
         _edge = edge;
     }
     public void update(boolean buttonState){

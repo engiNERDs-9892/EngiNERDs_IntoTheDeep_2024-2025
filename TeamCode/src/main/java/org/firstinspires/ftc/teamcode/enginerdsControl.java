@@ -36,6 +36,11 @@ public class enginerdsControl extends LinearOpMode {
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         //Initialize servos
+        servoArm.setDirection(Servo.Direction.FORWARD);
+        servoBucket.setDirection(Servo.Direction.FORWARD);
+        servoIntake.setDirection(Servo.Direction.FORWARD);
+        servoSlide.setDirection(Servo.Direction.FORWARD);
+
         waitForStart();
         //Run
         while(!isStopRequested()){
