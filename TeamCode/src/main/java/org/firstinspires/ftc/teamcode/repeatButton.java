@@ -17,6 +17,8 @@ public abstract class repeatButton {
     public repeatButton(){
         this.delay = 0.75;
         this.repeatPeriod = 0.25;
+        this.delayTimer = new ElapsedTime();
+        this.repeatTimer = new ElapsedTime();
     }
     public void update(boolean buttonState){
         boolean trigger = !previousButtonState && buttonState;

@@ -2,13 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous
+@TeleOp
 public class testServos extends LinearOpMode {
-    public static Servo[] servoList;
-    public static String[] servoNames = {"servoBucket", "servoLift", "servoArm", "servo"};
+    public static Servo[] servoList = new Servo[12];
+    //public static String[] servoNames = {"servoBucket", "servoLift", "servoArm", "servo"};
+    public static String[] servoNames = {"servo0", "servo1", "servo2", "servo3", "servo4", "servo5"};
     public static int currentServo;
 
     @Override
@@ -22,7 +24,7 @@ public class testServos extends LinearOpMode {
             @Override
             public void trigger() {
                 currentServo += 1;
-                if(currentServo >= servoList.length){
+                if(currentServo >= servoNames.length){
                     currentServo = 0;
                 }
             }
@@ -32,18 +34,18 @@ public class testServos extends LinearOpMode {
             public void trigger() {
                 currentServo -= 1;
                 if(currentServo < 0){
-                    currentServo = servoList.length - 1;
+                    currentServo = servoNames.length - 1;
                 }
             }
         };
-        edgeButton x = new edgeButton() {
+        repeatButton x = new repeatButton() {
             @Override
             public void trigger() {
                 Servo servo = servoList[currentServo];
                 servo.setPosition(servo.getPosition() + 0.05);
             }
         };
-        edgeButton y = new edgeButton() {
+        repeatButton y = new repeatButton() {
             @Override
             public void trigger() {
                 Servo servo = servoList[currentServo];
@@ -57,7 +59,7 @@ public class testServos extends LinearOpMode {
             x.update(gamepad1.x);
             y.update(gamepad1.y);
             telemetry.addLine("Servo positions");
-            for(int i = 0; i<4; i++){
+            for(int i = 0; i < servoNames.length; i++){
                 telemetry.addData(servoNames[i], servoList[i].getPosition());
             }
             telemetry.addData("Current servo", currentServo);
