@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class testServos extends LinearOpMode {
     public static Servo[] servoList = new Servo[12];
-    //public static String[] servoNames = {"servoBucket", "servoLift", "servoArm", "servo"};
-    public static String[] servoNames = {"servo0", "servo1", "servo2", "servo3", "servo4", "servo5"};
+    public static String[] servoNames = {"servoBucket", "servoLift", "servoArm", "servo"};
+    //public static String[] servoNames = {"servo0", "servo1", "servo2", "servo3", "servo4", "servo5"};
     public static int currentServo;
 
     @Override

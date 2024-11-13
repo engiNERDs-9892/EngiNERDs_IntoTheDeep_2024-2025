@@ -24,7 +24,8 @@ public class funnyAutonomous extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        ElapsedTime timer = new ElapsedTime(0);
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
         while(opModeInInit()){
             telemetry.addLine("Opmode in initialization");
             telemetry.addLine(String.format("I have been waiting for %.1f seconds", timer.time()));

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
@@ -16,7 +17,7 @@ public class enginerdsControl extends LinearOpMode {
     private static Servo servoSlide;
     private static Servo servoIntake;
     private static Servo servoArm;
-
+    public static boolean useFieldCentric;
     @Override
     public void runOpMode(){
         //Initialization
@@ -25,16 +26,17 @@ public class enginerdsControl extends LinearOpMode {
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorLL");
-        servoArm = hardwareMap.servo.get("servoArm");
-        servoBucket = hardwareMap.servo.get("servoBucket");
-        servoIntake = hardwareMap.servo.get("servoIntake");
-        servoSlide = hardwareMap.servo.get("servoSlide");
+        //motorLL = hardwareMap.dcMotor.get("motorLL");
+        //servoArm = hardwareMap.servo.get("servoArm");
+        //servoBucket = hardwareMap.servo.get("servoBucket");
+        //servoIntake = hardwareMap.servo.get("servoIntake");
+        //servoSlide = hardwareMap.servo.get("servoSlide");
         //Initialize motors
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
+        //motorLL.setDirection(DcMotor.Direction.FORWARD);
         //Initialize servos
         servoArm.setDirection(Servo.Direction.FORWARD);
         servoBucket.setDirection(Servo.Direction.FORWARD);
@@ -50,7 +52,7 @@ public class enginerdsControl extends LinearOpMode {
             double y = gamepad1.left_stick_y;
             double r = gamepad1.right_stick_x;
 
-            double heading = 0;
+            double heading = useFieldCentric ? 0 : 0;
             //Rotate the heading
             double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
             double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);
