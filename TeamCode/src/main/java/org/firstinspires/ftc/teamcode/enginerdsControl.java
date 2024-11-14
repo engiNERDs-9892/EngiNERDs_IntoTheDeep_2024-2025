@@ -18,6 +18,8 @@ public class enginerdsControl extends LinearOpMode {
     private static Servo servoIntake;
     private static Servo servoArm;
     public static boolean useFieldCentric;
+
+
     @Override
     public void runOpMode(){
         //Initialization
@@ -42,7 +44,7 @@ public class enginerdsControl extends LinearOpMode {
         servoBucket.setDirection(Servo.Direction.FORWARD);
         servoIntake.setDirection(Servo.Direction.FORWARD);
         servoSlide.setDirection(Servo.Direction.FORWARD);
-
+        toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
         waitForStart();
         //Run
         while(opModeIsActive()){
@@ -52,7 +54,7 @@ public class enginerdsControl extends LinearOpMode {
             double y = gamepad1.left_stick_y;
             double r = gamepad1.right_stick_x;
 
-            double heading = useFieldCentric ? 0 : 0;
+            double heading = useFieldCentric ? 0.0 : 0;
             //Rotate the heading
             double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
             double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);
@@ -73,23 +75,19 @@ public class enginerdsControl extends LinearOpMode {
             motorBL.setPower(motorBLPower);
             motorBR.setPower(motorBRPower);
             //
-            servoSlide.setPosition(gamepad2.left_stick_x);
-            motorLL.setPower(gamepad2.right_stick_x);
-            if(gamepad2.a){
-                servoIntake.setPosition(0.5);
-            }else{
-                servoIntake.setPosition(0.2);
+            servoSlide.setPosition((1+gamepad2.left_stick_x) * 0.5);
+            motorLL.setPower(gamepad2.right_stick_y);
+            servoIntake.setPosition((1 + gamepad2.right_trigger - gamepad2.left_trigger) * 0.5);
+            if(gamepad2.x){
+                servoArm.setPosition(servoPositions.ARM_INTAKE);
+            }
+            if(gamepad2.y){
+                servoArm.setPosition(servoPositions.ARM_NEUTRAL);
             }
             if(gamepad2.b){
-                servoArm.setPosition(0.2);
-            }else{
-                servoArm.setPosition(0);
+                servoArm.setPosition(servoPositions.ARM_OUTPUT);
             }
-            if(gamepad2.x){
-                servoBucket.setPosition(0.2);
-            }else{
-                servoBucket.setPosition(0);
-            }
+            bucketToggle.update(gamepad2.a);
         }
     }
 }

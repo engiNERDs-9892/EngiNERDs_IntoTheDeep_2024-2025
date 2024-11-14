@@ -4,17 +4,22 @@ public abstract class toggleButton {
 
     private boolean toggleState;
     private boolean previousButtonState;
-    enum Edge {
+    public enum Edge {
             RISING,
             FALLING,
     };
-    private Edge _edge;
+    private Edge edge;
     public toggleButton(Edge edge){
-        _edge = edge;
+        this.edge = edge;
+        toggleState = false;
+    }
+    public toggleButton(){
+        edge = Edge.RISING;
+        toggleState = false;
     }
     public void update(boolean buttonState){
-        boolean triggerToggle = !previousButtonState && buttonState && _edge == Edge.RISING ||
-                previousButtonState && !buttonState && _edge == Edge.FALLING;
+        boolean triggerToggle = !previousButtonState && buttonState && edge == Edge.RISING ||
+                previousButtonState && !buttonState && edge == Edge.FALLING;
         if(triggerToggle){
             toggleState = !toggleState;
             if(toggleState){
