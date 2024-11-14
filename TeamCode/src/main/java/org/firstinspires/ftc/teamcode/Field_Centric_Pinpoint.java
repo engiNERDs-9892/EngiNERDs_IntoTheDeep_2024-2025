@@ -32,7 +32,7 @@ public class Field_Centric_Pinpoint extends LinearOpMode {
         //Ignore comment above
         //Copied from gobilda sample code please adjust values
         //odo.setOffsets(-84.0, -168.0);
-        //odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.resetPosAndIMU();
 

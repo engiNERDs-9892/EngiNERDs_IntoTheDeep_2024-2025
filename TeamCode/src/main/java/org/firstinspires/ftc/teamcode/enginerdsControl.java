@@ -26,17 +26,17 @@ public class enginerdsControl extends LinearOpMode {
         motorFR = hardwareMap.dcMotor.get("motorFR");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
-        //motorLL = hardwareMap.dcMotor.get("motorLL");
-        //servoArm = hardwareMap.servo.get("servoArm");
-        //servoBucket = hardwareMap.servo.get("servoBucket");
-        //servoIntake = hardwareMap.servo.get("servoIntake");
-        //servoSlide = hardwareMap.servo.get("servoSlide");
+        motorLL = hardwareMap.dcMotor.get("motorLL");
+        servoArm = hardwareMap.servo.get("servoArm");
+        servoBucket = hardwareMap.servo.get("servoBucket");
+        servoIntake = hardwareMap.servo.get("servoIntake");
+        servoSlide = hardwareMap.servo.get("servoSlide");
         //Initialize motors
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
-        //motorLL.setDirection(DcMotor.Direction.FORWARD);
+        motorLL.setDirection(DcMotor.Direction.FORWARD);
         //Initialize servos
         servoArm.setDirection(Servo.Direction.FORWARD);
         servoBucket.setDirection(Servo.Direction.FORWARD);
@@ -45,7 +45,7 @@ public class enginerdsControl extends LinearOpMode {
 
         waitForStart();
         //Run
-        while(!isStopRequested()){
+        while(opModeIsActive()){
             //Wheels
             //Get gamepad input
             double x = gamepad1.left_stick_x;
@@ -62,7 +62,7 @@ public class enginerdsControl extends LinearOpMode {
             double motorBLPower = (rotY - rotX + r);
             double motorFRPower = (rotY - rotX - r);
             double motorBRPower = (rotY + rotX - r);
-            denominator = Math.max(Math.max(motorFLPower, motorFRPower), Math.max(motorBLPower, motorBRPower));
+            //denominator = Math.max(Math.max(Math.max(Math.abs(motorFLPower), Math.abs(motorFRPower)), Math.max(Math.abs(motorBLPower), Math.abs(motorBRPower))), 1);
             motorFLPower /= denominator;
             motorFRPower /= denominator;
             motorBLPower /= denominator;
