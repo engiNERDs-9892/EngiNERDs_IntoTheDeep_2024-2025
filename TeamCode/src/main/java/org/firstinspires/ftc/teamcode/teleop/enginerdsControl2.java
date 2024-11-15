@@ -1,49 +1,20 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.myLinearOpMode;
+import org.firstinspires.ftc.teamcode.testing.servoPositions;
+import org.firstinspires.ftc.teamcode.toggleServo;
 
 @TeleOp
-public class enginerdsControl extends LinearOpMode {
-    private static DcMotor motorFL;
-    private static DcMotor motorFR;
-    private static DcMotor motorBL;
-    private static DcMotor motorBR;
-    private static DcMotor motorLL;//Lifty lift
-    private static Servo servoBucket;
-    private static Servo servoSlide;
-    private static Servo servoIntake;
-    private static Servo servoArm;
+public class enginerdsControl2 extends myLinearOpMode {
     public static boolean useFieldCentric;
-
 
     @Override
     public void runOpMode(){
+        super.runOpMode();
         //Initialization
         //hardwareMap
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorLL = hardwareMap.dcMotor.get("motorLL");
-        servoArm = hardwareMap.servo.get("servoArm");
-        servoBucket = hardwareMap.servo.get("servoBucket");
-        servoIntake = hardwareMap.servo.get("servoIntake");
-        servoSlide = hardwareMap.servo.get("servoSlide");
-        //Initialize motors
-        motorFL.setDirection(DcMotor.Direction.REVERSE);
-        motorFR.setDirection(DcMotor.Direction.FORWARD);
-        motorBR.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.REVERSE);
-        motorLL.setDirection(DcMotor.Direction.FORWARD);
-        //Initialize servos
-        servoArm.setDirection(Servo.Direction.FORWARD);
-        servoBucket.setDirection(Servo.Direction.FORWARD);
-        servoIntake.setDirection(Servo.Direction.FORWARD);
-        servoSlide.setDirection(Servo.Direction.FORWARD);
         toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
         waitForStart();
         //Run
@@ -76,18 +47,19 @@ public class enginerdsControl extends LinearOpMode {
             motorBR.setPower(motorBRPower);
             //
             servoSlide.setPosition((1+gamepad2.left_stick_x) * 0.5);
-            motorLL.setPower(gamepad2.right_stick_y);
+            motorLL.setPower(-gamepad2.right_stick_y);
             servoIntake.setPosition((1 + gamepad2.right_trigger - gamepad2.left_trigger) * 0.5);
             if(gamepad2.x){
                 servoArm.setPosition(servoPositions.ARM_INTAKE);
             }
-            if(gamepad2.y){
-                servoArm.setPosition(servoPositions.ARM_NEUTRAL);
-            }
+            
             if(gamepad2.b){
                 servoArm.setPosition(servoPositions.ARM_OUTPUT);
             }
             bucketToggle.update(gamepad2.a);
+            telemetry.addData("Lifty", motorLL.getCurrentPosition());
+            telemetry.addData("Intake", servoIntake.getPosition());
+            telemetry.update();
         }
     }
 }
