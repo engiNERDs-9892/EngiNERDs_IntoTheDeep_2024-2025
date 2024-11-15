@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.testing.servoPositions;
 import org.firstinspires.ftc.teamcode.toggleServo;
 
@@ -19,6 +20,7 @@ public class enginerdsControl extends LinearOpMode {
     private static Servo servoSlide;
     private static Servo servoIntake;
     private static Servo servoArm;
+    protected static GoBildaPinpointDriver odo;
     public static boolean useFieldCentric;
 
 
@@ -53,17 +55,25 @@ public class enginerdsControl extends LinearOpMode {
         servoArm.setPosition(servoPositions.ARM_OUTPUT);
         servoIntake.setPosition(0.5);
         servoSlide.setPosition(0.5);
+        //Initialize pinpoint
+        odo.setOffsets(-84.0, -168.0);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.resetPosAndIMU();
+        //
         toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
         waitForStart();
         //Run
         while(opModeIsActive()){
+            //Update odo
+            odo.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
             //Wheels
             //Get gamepad input
             double x = gamepad1.left_stick_x;
             double y = gamepad1.left_stick_y;
             double r = gamepad1.right_stick_x;
 
-            double heading = useFieldCentric ? 0.0 : 0;
+            double heading = useFieldCentric ? odo.getHeading() : 0;
             //Rotate the heading
             double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
             double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);

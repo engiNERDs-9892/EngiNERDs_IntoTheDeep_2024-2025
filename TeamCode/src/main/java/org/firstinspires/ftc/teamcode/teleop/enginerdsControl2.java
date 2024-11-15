@@ -14,7 +14,6 @@ public class enginerdsControl2 extends myLinearOpMode {
     public void runOpMode(){
         super.runOpMode();
         //Initialization
-        //hardwareMap
         toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
         waitForStart();
         //Run
@@ -25,7 +24,7 @@ public class enginerdsControl2 extends myLinearOpMode {
             double y = gamepad1.left_stick_y;
             double r = gamepad1.right_stick_x;
 
-            double heading = useFieldCentric ? 0.0 : 0;
+            double heading = useFieldCentric ? odo.getHeading() : 0;
             //Rotate the heading
             double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
             double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);

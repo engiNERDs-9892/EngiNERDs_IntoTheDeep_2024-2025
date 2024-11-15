@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.testing.servoPositions;
@@ -16,6 +18,8 @@ public class myLinearOpMode extends LinearOpMode {
     protected static Servo servoSlide;
     protected static Servo servoIntake;
     protected static Servo servoArm;
+    protected static GoBildaPinpointDriver odo;
+    protected static IMU imu;
     public static double unitsPerTick = 10;
 
     @Override
@@ -31,6 +35,8 @@ public class myLinearOpMode extends LinearOpMode {
         servoBucket = hardwareMap.servo.get("servoBucket");
         servoIntake = hardwareMap.servo.get("servoIntake");
         servoSlide = hardwareMap.servo.get("servoSlide");
+        //imu = hardwareMap.get(IMU.class, "imu");
+        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         //Initialize motors
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorFR.setDirection(DcMotor.Direction.FORWARD);
@@ -40,6 +46,8 @@ public class myLinearOpMode extends LinearOpMode {
         motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorLL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //Initialize servos
         servoArm.setDirection(Servo.Direction.FORWARD);
         servoBucket.setDirection(Servo.Direction.FORWARD);
@@ -49,7 +57,20 @@ public class myLinearOpMode extends LinearOpMode {
         servoArm.setPosition(servoPositions.ARM_OUTPUT);
         servoIntake.setPosition(0.5);
         servoSlide.setPosition(0.5);
-        setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //Initialize pinpoint
+        //TODO change offsets
+        odo.setOffsets(0, 0);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.resetPosAndIMU();
+        /*
+        //Initialize IMU
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
+        //*/
+        //
     }
 
     /**
