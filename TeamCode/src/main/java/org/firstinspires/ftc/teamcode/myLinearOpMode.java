@@ -18,9 +18,13 @@ public class myLinearOpMode extends LinearOpMode {
     protected static GoBildaPinpointDriver odo;
     protected static IMU imu;
     public static double unitsPerTick = 10;
-
-    @Override
     public void runOpMode(){
+        initialize();
+    }
+    public void initialize(){
+        initialize(true);
+    }
+    public void initialize(Boolean resetHeading){
         //Initialization
         //hardwareMap
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -59,7 +63,10 @@ public class myLinearOpMode extends LinearOpMode {
         odo.setOffsets(0, 0);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        odo.resetPosAndIMU();
+        if(resetHeading){
+            odo.resetPosAndIMU();
+        }
+
         /*
         //Initialize IMU
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;

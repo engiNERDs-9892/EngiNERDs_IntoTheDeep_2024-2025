@@ -14,7 +14,7 @@ public class enginerdsControl2 extends myLinearOpMode {
 
     @Override
     public void runOpMode(){
-        super.runOpMode();
+        super.initialize(false);
         //Initialization
         toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
         toggleServo armToggle = new toggleServo(servoArm, servoPositions.ARM_OUTPUT, servoPositions.ARM_INTAKE);

@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import org.firstinspires.ftc.teamcode.myLinearOpMode;
-import org.firstinspires.ftc.teamcode.servoPositions;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.myLinearOpMode;
+import org.firstinspires.ftc.teamcode.servoPositions;
+
 @Autonomous
-public class leftAutononmous extends myLinearOpMode {
+public class leftAutononmous2 extends myLinearOpMode {
 
     @Override
     public void runOpMode(){
@@ -40,27 +40,9 @@ public class leftAutononmous extends myLinearOpMode {
         setDrivePower(0.8);
         Right(1200);
         Forward(-250);
-        Forward(1000);
-        Right(4800);
-        setDrivePower(0.2);
-        Forward(-700);
         servoArm.setPosition(servoPositions.ARM_INTAKE);
         sleep(200);
 
         //GOAT
-        /*
-        Move(directions.FORWARDS,5,.5);
-        Move(directions.RIGHT,50,.5);
-        Move(directions.CLOCKWISE,10,.4);
-        HS_Out(.4,200);
-        VS_Up(.5,-2000);
-        servoBucket.setPosition(0);
-        sleep(1000);
-        Move(directions.FORWARDS,10,.5);
-        Move(directions.CLOCKWISE,10,.5);
-        Move(directions.FORWARDS,90,.5);
-        servoBucket.setPosition(.3);
-        VS_Up(.5,2000);
-        */
     }
 }

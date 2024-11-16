@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.edgeButton;
 import org.firstinspires.ftc.teamcode.repeatButton;
 
-@TeleOp
+@TeleOp(group = "Testing")
 public class testServos extends LinearOpMode {
     public static Servo[] servoList = new Servo[12];
     public static String[] servoNames = {"servoBucket", "servoIntake", "servoArm", "servoSlide"};
