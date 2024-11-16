@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
-import org.firstinspires.ftc.teamcode.testing.servoPositions;
+import org.firstinspires.ftc.teamcode.servoPositions;
 import org.firstinspires.ftc.teamcode.toggleServo;
 
 @TeleOp
@@ -37,6 +37,7 @@ public class enginerdsControl extends LinearOpMode {
         servoBucket = hardwareMap.servo.get("servoBucket");
         servoIntake = hardwareMap.servo.get("servoIntake");
         servoSlide = hardwareMap.servo.get("servoSlide");
+        odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //Initialize motors
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorFR.setDirection(DcMotor.Direction.FORWARD);
@@ -62,15 +63,16 @@ public class enginerdsControl extends LinearOpMode {
         odo.resetPosAndIMU();
         //
         toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
+        toggleServo armToggle = new toggleServo(servoArm, servoPositions.ARM_OUTPUT, servoPositions.ARM_INTAKE);
         waitForStart();
+        useFieldCentric = false;
         //Run
         while(opModeIsActive()){
-            //Update odo
             odo.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
             //Wheels
             //Get gamepad input
             double x = gamepad1.left_stick_x;
-            double y = gamepad1.left_stick_y;
+            double y = -gamepad1.left_stick_y;
             double r = gamepad1.right_stick_x;
 
             double heading = useFieldCentric ? odo.getHeading() : 0;
@@ -84,8 +86,21 @@ public class enginerdsControl extends LinearOpMode {
             double motorFRPower = (rotY - rotX - r);
             double motorBRPower = (rotY + rotX - r);
             //denominator = Math.max(Math.max(Math.max(Math.abs(motorFLPower), Math.abs(motorFRPower)), Math.max(Math.abs(motorBLPower), Math.abs(motorBRPower))), 1);
+            denominator *= 1.5;
             if(gamepad1.left_bumper){
-                denominator *= 1.5;
+                denominator *= 2;
+            }
+            if(gamepad1.right_bumper){
+                denominator *= 3;
+            }
+            if(gamepad1.x){
+                useFieldCentric = true;
+            }
+            if(gamepad1.y){
+                useFieldCentric = false;
+            }
+            if(gamepad1.back){
+                odo.resetPosAndIMU();
             }
             motorFLPower /= denominator;
             motorFRPower /= denominator;
@@ -100,16 +115,11 @@ public class enginerdsControl extends LinearOpMode {
             servoSlide.setPosition((1+gamepad2.left_stick_x) * 0.5);
             motorLL.setPower(-gamepad2.right_stick_y);
             servoIntake.setPosition((1 + gamepad2.right_trigger - gamepad2.left_trigger) * 0.5);
-            if(gamepad2.x){
-                servoArm.setPosition(servoPositions.ARM_INTAKE);
-            }
-
-            if(gamepad2.b){
-                servoArm.setPosition(servoPositions.ARM_OUTPUT);
-            }
+            armToggle.update(gamepad2.b);
             bucketToggle.update(gamepad2.a);
             telemetry.addData("Lifty", motorLL.getCurrentPosition());
             telemetry.addData("Intake", servoIntake.getPosition());
+            telemetry.addData("Field Centric", useFieldCentric);
             telemetry.update();
         }
     }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.testing;
+package org.firstinspires.ftc.teamcode;
 
 public class servoPositions {
     public static final double ARM_INTAKE = 0.88;
