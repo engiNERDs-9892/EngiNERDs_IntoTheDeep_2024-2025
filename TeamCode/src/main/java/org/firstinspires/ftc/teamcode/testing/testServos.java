@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -69,7 +70,7 @@ public class testServos extends LinearOpMode {
             prev.update(gamepad1.right_bumper);
             forward.update(gamepad1.dpad_right);
             backward.update(gamepad1.dpad_left);
-            telemetry.addData("Current Servo", "%s %d", servoNames[currentServo], servoList[currentServo].getPosition());
+            telemetry.addData("Current Servo", "%s %f", servoNames[currentServo], servoList[currentServo].getPosition());
             telemetry.addLine("Servo positions");
             for(int i = 0; i < servoNames.length; i++){
                 telemetry.addData(servoNames[i], servoList[i].getPosition());

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
@@ -7,7 +8,7 @@ import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.servoPositions;
 import org.firstinspires.ftc.teamcode.toggleServo;
 
-@TeleOp
+@TeleOp(group = "Beta")
 public class enginerdsControl2 extends myLinearOpMode {
     public static boolean useFieldCentric;
 
@@ -19,6 +20,8 @@ public class enginerdsControl2 extends myLinearOpMode {
         toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
         toggleServo armToggle = new toggleServo(servoArm, servoPositions.ARM_OUTPUT, servoPositions.ARM_INTAKE);
         waitForStart();
+        servoBucket.setPosition(servoPositions.BUCKET_IN);
+        servoArm.setPosition(servoPositions.ARM_OUTPUT);
         useFieldCentric = false;
         //Run
         while(opModeIsActive()){

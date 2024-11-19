@@ -52,8 +52,6 @@ public class enginerdsControl extends LinearOpMode {
         servoBucket.setDirection(Servo.Direction.FORWARD);
         servoIntake.setDirection(Servo.Direction.FORWARD);
         servoSlide.setDirection(Servo.Direction.FORWARD);
-        servoBucket.setPosition(servoPositions.BUCKET_IN);
-        servoArm.setPosition(servoPositions.ARM_OUTPUT);
         servoIntake.setPosition(0.5);
         servoSlide.setPosition(0.5);
         //Initialize pinpoint
@@ -65,6 +63,8 @@ public class enginerdsControl extends LinearOpMode {
         toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
         toggleServo armToggle = new toggleServo(servoArm, servoPositions.ARM_OUTPUT, servoPositions.ARM_INTAKE);
         waitForStart();
+        servoBucket.setPosition(servoPositions.BUCKET_IN);
+        servoArm.setPosition(servoPositions.ARM_OUTPUT);
         useFieldCentric = false;
         //Run
         while(opModeIsActive()){
