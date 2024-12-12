@@ -11,6 +11,7 @@ public class myLinearOpMode extends LinearOpMode {
     protected static DcMotor motorBL;
     protected static DcMotor motorBR;
     protected static DcMotor motorLL;//Lifty lift
+    protected static DcMotor motorRR;//Risey Rise
     protected static Servo servoBucket;
     protected static Servo servoSlide;
     protected static Servo servoIntake;
@@ -28,6 +29,7 @@ public class myLinearOpMode extends LinearOpMode {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLL = hardwareMap.dcMotor.get("motorLL");
+        motorRR = hardwareMap.dcMotor.get("motorRR");
         servoArm = hardwareMap.servo.get("servoArm");
         servoBucket = hardwareMap.servo.get("servoBucket");
         servoIntake = hardwareMap.servo.get("servoIntake");
@@ -39,10 +41,16 @@ public class myLinearOpMode extends LinearOpMode {
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
+
         motorLL.setDirection(DcMotor.Direction.REVERSE);
         motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorLL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        motorRR.setDirection(DcMotor.Direction.REVERSE);
+        motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorRR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorRR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //Initialize servos
@@ -52,14 +60,12 @@ public class myLinearOpMode extends LinearOpMode {
         servoSlide.setDirection(Servo.Direction.FORWARD);
         servoBucket.setPosition(servoPositions.BUCKET_IN);
         servoArm.setPosition(servoPositions.ARM_OUTPUT);
-        servoIntake.setPosition(0.5);
-        servoSlide.setPosition(0.5);
         //Initialize pinpoint
         //TODO change offsets
         odo.setOffsets(0, 0);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        odo.resetPosAndIMU();
+        //odo.resetPosAndIMU();
         /*
         //Initialize IMU
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;

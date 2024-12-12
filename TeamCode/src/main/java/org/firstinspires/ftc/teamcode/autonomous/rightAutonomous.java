@@ -11,6 +11,8 @@ public class rightAutonomous extends myLinearOpMode {
     @Override
     public void runOpMode(){
         super.runOpMode();
+        servoIntake.setPosition(0.5);
+        servoSlide.setPosition(0.5);
         waitForStart();
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDrivePower(0.5);
