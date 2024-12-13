@@ -13,6 +13,12 @@ public class myConstants {
             GoBildaPinpointDriver.EncoderDirection.REVERSED;
     public static GoBildaPinpointDriver.EncoderDirection yEncoder_DIRECTION =
             GoBildaPinpointDriver.EncoderDirection.FORWARD;
-    public static double X_OFFSET = -105;
-    public static double Y_OFFSET = -123.825;
+    public static double X_OFFSET = 139;
+    public static double Y_OFFSET = -158;
+    /*Circle direction
+    Left	-	X too big
+    Right	-	X too small
+    Up  	-	Y too big
+    Down	-	Y too small
+    */
 }
