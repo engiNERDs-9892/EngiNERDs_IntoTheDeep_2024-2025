@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.List;
@@ -44,9 +45,9 @@ public class PinpointLocalizer implements Localizer {
 
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-        odo.setOffsets(107, 0);
+        odo.setOffsets(myConstants.X_OFFSET, myConstants.Y_OFFSET);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderDirections(myConstants.xEncoder_DIRECTION, myConstants.yEncoder_DIRECTION);
         odo.resetPosAndIMU();
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
 
