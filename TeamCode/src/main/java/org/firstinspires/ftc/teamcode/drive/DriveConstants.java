@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 @Config
 public class DriveConstants {
 
+
     /*
      * These are motor constants that should be listed online for your motors.
      */
@@ -65,10 +66,20 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 45.0*.75;
+    public static double MAX_VEL = 50;
     public static double MAX_ACCEL = 30;
     public static double MAX_ANG_VEL = 2.2;
     public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    /*tuner results
+    Max Recommended Velocity: 70.0638156180442
+    Max Velocity: 87.57976952255525
+    Voltage Compensated kF: 4228.287866231873
+
+    Max Angular Velocity (deg): 178.6333251371718
+    Max Angular Velocity (rad): 3.117739677429199
+    Max Recommended Angular Velocity (deg): 142.90666010973743
+    Max Recommended Angular Velocity (rad): 2.4941917419433595
+     */
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
