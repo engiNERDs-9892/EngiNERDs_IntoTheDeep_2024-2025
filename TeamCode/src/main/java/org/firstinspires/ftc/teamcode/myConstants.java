@@ -26,14 +26,13 @@ public class myConstants {
 
     public static class servoPositions {
         public static final double ARM_INTAKE = 0.88;
-        public static final double ARM_NEUTRAL = 0.5;//Unused
         public static final double ARM_OUTPUT = 0.35;
         public static final double BUCKET_OUT = .15;
         public static final double BUCKET_IN = .6;
         public static final double CLAW_LEFT_OPEN = 0.85;
         public static final double CLAW_RIGHT_OPEN = 0.15;
-        public static final double CLAW_LEFT_CLOSED = 0.52-0.01;
-        public static final double CLAW_RIGHT_CLOSED = 0.48+0.01;
+        public static final double CLAW_LEFT_CLOSED = 0.51;
+        public static final double CLAW_RIGHT_CLOSED = 0.49+0.1;
         public static final double ARM_UP = 0.525;
         public static final double ARM_DOWN = 0.2;
 
