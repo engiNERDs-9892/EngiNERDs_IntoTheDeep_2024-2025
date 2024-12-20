@@ -32,9 +32,9 @@ public class myConstants {
         public static final double BUCKET_IN = .6;
         public static final double CLAW_LEFT_OPEN = 0.85;
         public static final double CLAW_RIGHT_OPEN = 0.15;
-        public static final double CLAW_LEFT_CLOSED = 0.52;
-        public static final double CLAW_RIGHT_CLOSED = 0.48;
-        public static final double ARM_UP = 0.5;
+        public static final double CLAW_LEFT_CLOSED = 0.52-0.01;
+        public static final double CLAW_RIGHT_CLOSED = 0.48+0.01;
+        public static final double ARM_UP = 0.525;
         public static final double ARM_DOWN = 0.2;
 
     }
