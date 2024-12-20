@@ -1,28 +1,31 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
+import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
-import org.firstinspires.ftc.teamcode.servoPositions;
 import org.firstinspires.ftc.teamcode.toggleServo;
 
 @TeleOp(group = "Beta")
 public class enginerdsControl2 extends myLinearOpMode {
     public static boolean useFieldCentric;
-
+    public static boolean hangMode;
 
     @Override
-    public void runOpMode(){
-        super.initialize(false);
+    public void runOpMode() throws InterruptedException {
+        super.runOpMode();
         //Initialization
-        toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
-        toggleServo armToggle = new toggleServo(servoArm, servoPositions.ARM_OUTPUT, servoPositions.ARM_INTAKE);
+        toggleServo armToggle = new toggleServo(servoArm, myConstants.servoPositions.ARM_UP, myConstants.servoPositions.ARM_DOWN);
+        toggleServo clawLeftToggle = new toggleServo(servoClawLeft, myConstants.servoPositions.CLAW_LEFT_OPEN, myConstants.servoPositions.CLAW_LEFT_CLOSED);
+        toggleServo clawRightToggle = new toggleServo(servoClawRight, myConstants.servoPositions.CLAW_RIGHT_OPEN, myConstants.servoPositions.CLAW_RIGHT_CLOSED);
         waitForStart();
-        servoBucket.setPosition(servoPositions.BUCKET_IN);
-        servoArm.setPosition(servoPositions.ARM_OUTPUT);
         useFieldCentric = false;
+        hangMode = false;
         //Run
         while(opModeIsActive()){
             odo.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
@@ -42,7 +45,6 @@ public class enginerdsControl2 extends myLinearOpMode {
             double motorBLPower = (rotY - rotX + r);
             double motorFRPower = (rotY - rotX - r);
             double motorBRPower = (rotY + rotX - r);
-            //denominator = Math.max(Math.max(Math.max(Math.abs(motorFLPower), Math.abs(motorFRPower)), Math.max(Math.abs(motorBLPower), Math.abs(motorBRPower))), 1);
             denominator *= 1.5;
             if(gamepad1.left_bumper){
                 denominator *= 2;
@@ -69,14 +71,33 @@ public class enginerdsControl2 extends myLinearOpMode {
             motorBL.setPower(motorBLPower);
             motorBR.setPower(motorBRPower);
             //
-            servoSlide.setPosition((1+gamepad2.left_stick_x) * 0.5);
-            motorLL.setPower(-gamepad2.right_stick_y);
-            servoIntake.setPosition((1 + gamepad2.right_trigger - gamepad2.left_trigger) * 0.5);
+            if(!hangMode) {
+                if (-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) {
+                    motorLL.setPower(-gamepad2.right_stick_y);
+                    motorRR.setPower(-gamepad2.right_stick_y);
+                } else if (-gamepad2.right_stick_y > 0 && motorLL.getCurrentPosition() < SLIDE_TOP) {
+                    motorLL.setPower(-gamepad2.right_stick_y);
+                    motorRR.setPower(-gamepad2.right_stick_y);
+                } else {
+                    motorLL.setPower(0);
+                    motorRR.setPower(0);
+                }
+            }
+            /*if(gamepad2.start){
+                hangMode = true;
+                motorLL.setTargetPosition(motorLL.getCurrentPosition());
+                motorRR.setTargetPosition(motorRR.getCurrentPosition());
+                motorLL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorLL.setPower(0.75);
+                motorRR.setPower(0.75);
+            }*/
             armToggle.update(gamepad2.b);
-            bucketToggle.update(gamepad2.a);
+            clawLeftToggle.update(gamepad2.a);
+            clawRightToggle.update(gamepad2.a);
             //
             telemetry.addData("Lifty", motorLL.getCurrentPosition());
-            telemetry.addData("Intake", servoIntake.getPosition());
+            telemetry.addData("Risey", motorRR.getCurrentPosition());
             telemetry.addData("Field Centric", useFieldCentric);
             telemetry.update();
         }

@@ -42,7 +42,7 @@ public class PinpointLocalizer implements Localizer {
 
         lastEncPositions = lastTrackingEncPositions;
         lastEncVels = lastTrackingEncVels;
-
+        //HI
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odo.setOffsets(myConstants.X_OFFSET, myConstants.Y_OFFSET);
@@ -64,8 +64,8 @@ public class PinpointLocalizer implements Localizer {
 
     @Override
     public void setPoseEstimate(@NonNull Pose2d pose2d) {
-        Pose2D pose = new Pose2D(DistanceUnit.INCH, pose2d.getX(), pose2d.getY(), AngleUnit.RADIANS, pose2d.getHeading());
-        odo.setPosition(pose);
+        //Pose2D pose = new Pose2D(DistanceUnit.INCH, pose2d.getX(), pose2d.getY(), AngleUnit.RADIANS, pose2d.getHeading());
+        //odo.setPosition(pose);
     }
 
     @Nullable

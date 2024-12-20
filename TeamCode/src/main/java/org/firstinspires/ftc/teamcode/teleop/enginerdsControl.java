@@ -1,14 +1,16 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
-import org.firstinspires.ftc.teamcode.servoPositions;
+import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.toggleServo;
 
+@Disabled
 @TeleOp
 public class enginerdsControl extends LinearOpMode {
     private static DcMotor motorFL;
@@ -60,11 +62,11 @@ public class enginerdsControl extends LinearOpMode {
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.resetPosAndIMU();
         //
-        toggleServo bucketToggle = new toggleServo(servoBucket, servoPositions.BUCKET_IN, servoPositions.BUCKET_OUT);
-        toggleServo armToggle = new toggleServo(servoArm, servoPositions.ARM_OUTPUT, servoPositions.ARM_INTAKE);
+        toggleServo bucketToggle = new toggleServo(servoBucket, myConstants.servoPositions.BUCKET_IN, myConstants.servoPositions.BUCKET_OUT);
+        toggleServo armToggle = new toggleServo(servoArm, myConstants.servoPositions.ARM_OUTPUT, myConstants.servoPositions.ARM_INTAKE);
         waitForStart();
-        servoBucket.setPosition(servoPositions.BUCKET_IN);
-        servoArm.setPosition(servoPositions.ARM_OUTPUT);
+        servoBucket.setPosition(myConstants.servoPositions.BUCKET_IN);
+        servoArm.setPosition(myConstants.servoPositions.ARM_OUTPUT);
         useFieldCentric = false;
         //Run
         while(opModeIsActive()){

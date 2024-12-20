@@ -11,7 +11,6 @@ public class toggleServo extends toggleButton{
         this.servo = servo;
         this.onPosition = onPosition;
         this.offPosition = offPosition;
-        servo.setPosition(offPosition);
     }
     public toggleServo(Servo servo, double onPosition, double offPosition, Edge edge){
         super(edge);
