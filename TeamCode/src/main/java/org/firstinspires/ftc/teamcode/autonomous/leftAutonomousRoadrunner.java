@@ -1,15 +1,11 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -199,6 +195,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
         drive.followTrajectorySequence(trajectory16);
         sleep(500);
         drive.followTrajectorySequence(trajectory2B);
+        myConstants.slidePositionSave = motorLL.getCurrentPosition();
         //DONE
         telemetry.addData("Time", timer.seconds());
         telemetry.update();

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @Config
 public class myConstants {
+    public static double slidePositionSave = 0;
     public static DcMotorSimple.Direction motorFL_DIRECTION = DcMotorSimple.Direction.REVERSE;
     public static DcMotorSimple.Direction motorFR_DIRECTION = DcMotorSimple.Direction.FORWARD;
     public static DcMotorSimple.Direction motorLR_DIRECTION = DcMotorSimple.Direction.REVERSE;

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
+import org.firstinspires.ftc.teamcode.toggleButton;
 import org.firstinspires.ftc.teamcode.toggleServo;
 
 @TeleOp(group = "Beta")
@@ -20,6 +21,27 @@ public class enginerdsControl2 extends myLinearOpMode {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
         //Initialization
+        toggleButton hangToggle = new toggleButton() {
+            @Override
+            public void toggleOn() {
+                hangMode = true;
+                motorLL.setTargetPosition(motorLL.getCurrentPosition());
+                motorRR.setTargetPosition(motorRR.getCurrentPosition());
+                motorLL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                motorLL.setPower(0.75);
+                motorRR.setPower(0.75);
+            }
+
+            @Override
+            public void toggleOff() {
+                hangMode = false;
+                motorLL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                motorRR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                motorLL.setPower(0);
+                motorRR.setPower(0);
+            }
+        };
         toggleServo armToggle = new toggleServo(servoArm, myConstants.servoPositions.ARM_UP, myConstants.servoPositions.ARM_DOWN);
         toggleServo clawLeftToggle = new toggleServo(servoClawLeft, myConstants.servoPositions.CLAW_LEFT_OPEN, myConstants.servoPositions.CLAW_LEFT_CLOSED);
         toggleServo clawRightToggle = new toggleServo(servoClawRight, myConstants.servoPositions.CLAW_RIGHT_OPEN, myConstants.servoPositions.CLAW_RIGHT_CLOSED);
@@ -79,19 +101,14 @@ public class enginerdsControl2 extends myLinearOpMode {
                     motorLL.setPower(-gamepad2.right_stick_y);
                     motorRR.setPower(-gamepad2.right_stick_y);
                 } else {
+                    motorLL.setPower(-gamepad2.right_stick_y);
+                    motorRR.setPower(-gamepad2.right_stick_y);
                     motorLL.setPower(0);
                     motorRR.setPower(0);
                 }
             }
-            /*if(gamepad2.start){
-                hangMode = true;
-                motorLL.setTargetPosition(motorLL.getCurrentPosition());
-                motorRR.setTargetPosition(motorRR.getCurrentPosition());
-                motorLL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorLL.setPower(0.75);
-                motorRR.setPower(0.75);
-            }*/
+
+            hangToggle.update(gamepad2.back);
             armToggle.update(gamepad2.b);
             clawLeftToggle.update(gamepad2.a);
             clawRightToggle.update(gamepad2.a);
