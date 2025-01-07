@@ -35,7 +35,9 @@ public class myConstants {
         public static final double CLAW_LEFT_CLOSED = 0.51;
         public static final double CLAW_RIGHT_CLOSED = 0.49+0.1;
         public static final double ARM_UP = 0.525;
-        public static final double ARM_DOWN = 0.2;
+        public static final double ARM_DOWN = 0.19;
+        public static final double WRIST_A = 0.5;
+        public static final double WRIST_B = 0.825;
 
     }
 }

@@ -45,6 +45,7 @@ public class enginerdsControl2 extends myLinearOpMode {
         toggleServo armToggle = new toggleServo(servoArm, myConstants.servoPositions.ARM_UP, myConstants.servoPositions.ARM_DOWN);
         toggleServo clawLeftToggle = new toggleServo(servoClawLeft, myConstants.servoPositions.CLAW_LEFT_OPEN, myConstants.servoPositions.CLAW_LEFT_CLOSED);
         toggleServo clawRightToggle = new toggleServo(servoClawRight, myConstants.servoPositions.CLAW_RIGHT_OPEN, myConstants.servoPositions.CLAW_RIGHT_CLOSED);
+        toggleServo wristToggle = new toggleServo(servoWrist, myConstants.servoPositions.WRIST_A, myConstants.servoPositions.WRIST_B);
         waitForStart();
         useFieldCentric = false;
         hangMode = false;
@@ -94,17 +95,15 @@ public class enginerdsControl2 extends myLinearOpMode {
             motorBR.setPower(motorBRPower);
             //
             if(!hangMode) {
-                if (-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) {
-                    motorLL.setPower(-gamepad2.right_stick_y);
-                    motorRR.setPower(-gamepad2.right_stick_y);
-                } else if (-gamepad2.right_stick_y > 0 && motorLL.getCurrentPosition() < SLIDE_TOP) {
+                if ((-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) ||
+                        (-gamepad2.right_stick_y > 0 && motorLL.getCurrentPosition() < SLIDE_TOP) || true) {
                     motorLL.setPower(-gamepad2.right_stick_y);
                     motorRR.setPower(-gamepad2.right_stick_y);
                 } else {
-                    motorLL.setPower(-gamepad2.right_stick_y);
-                    motorRR.setPower(-gamepad2.right_stick_y);
                     motorLL.setPower(0);
                     motorRR.setPower(0);
+
+
                 }
             }
 
@@ -112,6 +111,7 @@ public class enginerdsControl2 extends myLinearOpMode {
             armToggle.update(gamepad2.b);
             clawLeftToggle.update(gamepad2.a);
             clawRightToggle.update(gamepad2.a);
+            wristToggle.update(gamepad2.x);
             //
             telemetry.addData("Lifty", motorLL.getCurrentPosition());
             telemetry.addData("Risey", motorRR.getCurrentPosition());

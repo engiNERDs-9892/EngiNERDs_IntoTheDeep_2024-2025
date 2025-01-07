@@ -17,6 +17,7 @@ public class myLinearOpMode extends LinearOpMode {
     protected static Servo servoClawLeft;
     protected static Servo servoClawRight;
     protected static Servo servoArm;
+    protected static Servo servoWrist;
     protected static GoBildaPinpointDriver odo;
     protected static IMU imu;
     public static double unitsPerTick = 10;
@@ -34,6 +35,7 @@ public class myLinearOpMode extends LinearOpMode {
         servoArm = hardwareMap.servo.get("servoArm");
         servoClawLeft = hardwareMap.servo.get("servoClawLeft");
         servoClawRight = hardwareMap.servo.get("servoClawRight");
+        servoWrist = hardwareMap.servo.get("servoWrist");
         //imu = hardwareMap.get(IMU.class, "imu");
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         //Initialize motors
