@@ -26,7 +26,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
         servoArm.setPosition(servoPositions.ARM_UP);
-        servoWrist.setPosition(servoPositions.WRIST_A);
+        servoWrist.setPosition(servoPositions.WRIST_B);
         motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLL.setPower(1.0);
@@ -123,9 +123,13 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                         new Vector2d(57, 1), 0
                 )
                 .addTemporalMarker(()->{
+                    servoArm.setPosition(servoPositions.ARM_HALF_DOWN);
+                })
+                .waitSeconds(0.4)
+                .addTemporalMarker(()->{
                     servoArm.setPosition(servoPositions.ARM_DOWN);
                 })
-                .waitSeconds(0.7)
+                .waitSeconds(0.9)
                 .addTemporalMarker(()->{
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
@@ -136,7 +140,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     motorLL.setTargetPosition(SLIDE_TOP);
                     motorRR.setTargetPosition(SLIDE_TOP);
                 })
-                .waitSeconds(0.3)
+                .waitSeconds(0.8)
                 .setTangent(Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(-0.5, 37), Math.toRadians(90))
                 .addTemporalMarker(()->{
@@ -153,12 +157,16 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 })
                 .setTangent(Math.toRadians(270))
                 .splineToConstantHeading(
-                        new Vector2d(57, 15), 0
+                        new Vector2d(57, 15.25), 0
                 )
+                .addTemporalMarker(()->{
+                    servoArm.setPosition(servoPositions.ARM_HALF_DOWN);
+                })
+                .waitSeconds(0.4)
                 .addTemporalMarker(()->{
                     servoArm.setPosition(servoPositions.ARM_DOWN);
                 })
-                .waitSeconds(0.7)
+                .waitSeconds(0.9)
                 .addTemporalMarker(()->{
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
@@ -185,12 +193,16 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 })
                 .setTangent(Math.toRadians(270))
                 .splineToConstantHeading(
-                        new Vector2d(57.75, 27), 0
+                        new Vector2d(57, 27.125), 0
                 )
+                .addTemporalMarker(()->{
+                    servoArm.setPosition(servoPositions.ARM_HALF_DOWN);
+                })
+                .waitSeconds(0.4)
                 .addTemporalMarker(()->{
                     servoArm.setPosition(servoPositions.ARM_DOWN);
                 })
-                .waitSeconds(1.0)
+                .waitSeconds(0.9)
                 .addTemporalMarker(()->{
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
@@ -201,7 +213,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     motorLL.setTargetPosition(SLIDE_TOP);
                     motorRR.setTargetPosition(SLIDE_TOP);
                 })
-                .waitSeconds(0.4)
+                .waitSeconds(0.7)
                 .setTangent(Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(-0.5, 37), Math.toRadians(90))
                 .addTemporalMarker(()->{
@@ -294,7 +306,11 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
         //DONE
         telemetry.addData("Time", timer.seconds());
         telemetry.update();
-        drive.followTrajectorySequence((drive.trajectorySequenceBuilder(trajectory1.end())).back(30).build());
+        drive.followTrajectorySequence((drive.trajectorySequenceBuilder(trajectory1.end())).addTemporalMarker(0.75, () -> {
+            motorLL.setTargetPosition(0);
+            motorRR.setTargetPosition(0);
+            servoWrist.setPosition(servoPositions.WRIST_B);
+        }).back(30).build());
         sleep(5000);
         //servoArm.setPosition(servoPositions.ARM_UP);
         //drive.followTrajectorySequence(trajectory3);

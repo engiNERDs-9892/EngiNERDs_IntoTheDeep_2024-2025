@@ -14,6 +14,7 @@ public class testServos extends LinearOpMode {
     public static String[] servoNames = {"servoClawRight", "servoClawLeft", "servoArm", "servoWrist"};
     //public static String[] servoNames = {"servo0", "servo1", "servo2", "servo3", "servo4", "servo5"};
     public static int currentServo;
+    public static double increment;
 
     @Override
     public void runOpMode(){
@@ -22,6 +23,7 @@ public class testServos extends LinearOpMode {
             servoList[i].setPosition(0.5);
         }
         currentServo = 0;
+        increment = 0.05;
         edgeButton next = new edgeButton() {
             @Override
             public void trigger() {
@@ -44,14 +46,14 @@ public class testServos extends LinearOpMode {
             @Override
             public void trigger() {
                 Servo servo = servoList[currentServo];
-                servo.setPosition(servo.getPosition() + 0.05);
+                servo.setPosition(servo.getPosition() + increment);
             }
         };
         repeatButton backward = new repeatButton() {
             @Override
             public void trigger() {
                 Servo servo = servoList[currentServo];
-                servo.setPosition(servo.getPosition() - 0.05);
+                servo.setPosition(servo.getPosition() - increment);
             }
         };
         telemetry.addLine("Controls\n  Bumpers to switch between servos\n  dpad to change servo positions");
@@ -70,6 +72,19 @@ public class testServos extends LinearOpMode {
             prev.update(gamepad1.right_bumper);
             forward.update(gamepad1.dpad_right);
             backward.update(gamepad1.dpad_left);
+            if(gamepad1.a){
+                increment = 0.2;
+            }
+            if(gamepad1.b){
+                increment = 0.05;
+            }
+            if(gamepad1.x){
+                increment = 0.01;
+            }
+            if(gamepad1.y){
+                increment = 0.005;
+            }
+            telemetry.addData("\u0394", increment);
             telemetry.addData("Current Servo", "%s %f", servoNames[currentServo], servoList[currentServo].getPosition());
             telemetry.addLine("Servo positions");
             for(int i = 0; i < servoNames.length; i++){

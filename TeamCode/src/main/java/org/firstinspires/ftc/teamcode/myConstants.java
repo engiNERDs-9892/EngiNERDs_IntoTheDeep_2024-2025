@@ -15,7 +15,7 @@ public class myConstants {
             GoBildaPinpointDriver.EncoderDirection.REVERSED;
     public static double X_OFFSET = 139;//139
     public static double Y_OFFSET = -158 ;//-158
-    public static int SLIDE_BOTTOM = 10;
+    public static int SLIDE_BOTTOM = 20;
     public static int SLIDE_TOP = 5500;
 
     /*Circle direction
@@ -35,7 +35,8 @@ public class myConstants {
         public static final double CLAW_LEFT_CLOSED = 0.51;
         public static final double CLAW_RIGHT_CLOSED = 0.49+0.1;
         public static final double ARM_UP = 0.525;
-        public static final double ARM_DOWN = 0.19;
+        public static final double ARM_DOWN = 0.21;//0.19
+        public static final double ARM_HALF_DOWN = 0.30;//0.19
         public static final double WRIST_A = 0.5;
         public static final double WRIST_B = 0.825;
 
