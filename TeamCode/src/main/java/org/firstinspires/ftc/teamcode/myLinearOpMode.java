@@ -14,6 +14,7 @@ public class myLinearOpMode extends LinearOpMode {
     protected static DcMotor motorBR;
     protected static DcMotor motorLL;//Lifty lift
     protected static DcMotor motorRR;//Risey Rise
+    protected static DcMotor motorFARM;
     protected static Servo servoClawLeft;
     protected static Servo servoClawRight;
     protected static Servo servoArm;
@@ -33,6 +34,7 @@ public class myLinearOpMode extends LinearOpMode {
         motorLL = hardwareMap.dcMotor.get("motorLL");
         motorRR = hardwareMap.dcMotor.get("motorRR");
         servoArm = hardwareMap.servo.get("servoArm");
+        motorFARM = hardwareMap.dcMotor.get("motorFARM");
         servoClawLeft = hardwareMap.servo.get("servoClawLeft");
         servoClawRight = hardwareMap.servo.get("servoClawRight");
         servoWrist = hardwareMap.servo.get("servoWrist");

@@ -42,7 +42,6 @@ public class enginerdsControl2 extends myLinearOpMode {
                 motorRR.setPower(0);
             }
         };
-        toggleServo armToggle = new toggleServo(servoArm, myConstants.servoPositions.ARM_UP, myConstants.servoPositions.ARM_DOWN);
         toggleServo clawLeftToggle = new toggleServo(servoClawLeft, myConstants.servoPositions.CLAW_LEFT_OPEN, myConstants.servoPositions.CLAW_LEFT_CLOSED);
         toggleServo clawRightToggle = new toggleServo(servoClawRight, myConstants.servoPositions.CLAW_RIGHT_OPEN, myConstants.servoPositions.CLAW_RIGHT_CLOSED);
         toggleServo wristToggle = new toggleServo(servoWrist, myConstants.servoPositions.WRIST_A, myConstants.servoPositions.WRIST_B);
@@ -93,6 +92,8 @@ public class enginerdsControl2 extends myLinearOpMode {
             motorFR.setPower(motorFRPower);
             motorBL.setPower(motorBLPower);
             motorBR.setPower(motorBRPower);
+
+            motorFARM.setPower(gamepad2.left_stick_y*0.5);
             //
             if(!hangMode) {
                 if ((-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) ||
@@ -108,7 +109,6 @@ public class enginerdsControl2 extends myLinearOpMode {
             }
 
             hangToggle.update(gamepad2.back);
-            armToggle.update(gamepad2.b);
             clawLeftToggle.update(gamepad2.a);
             clawRightToggle.update(gamepad2.a);
             wristToggle.update(gamepad2.x);
