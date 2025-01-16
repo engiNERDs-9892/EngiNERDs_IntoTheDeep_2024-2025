@@ -13,7 +13,7 @@ public class rightAutonomous2 extends myLinearOpMode {
         super.runOpMode();
         servoClawLeft.setPosition(myConstants.servoPositions.CLAW_LEFT_CLOSED);
         servoClawRight.setPosition(myConstants.servoPositions.CLAW_RIGHT_CLOSED);
-        servoArm.setPosition(myConstants.servoPositions.ARM_UP);
+        servoArm.setPosition(myConstants.ARM_UP);
         odo.resetPosAndIMU();
         waitForStart();
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

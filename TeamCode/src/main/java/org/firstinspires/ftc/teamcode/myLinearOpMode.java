@@ -45,7 +45,7 @@ public class myLinearOpMode extends LinearOpMode {
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
-
+        motorFARM.setDirection(DcMotorSimple.Direction.REVERSE);
         motorLL.setDirection(DcMotor.Direction.REVERSE);
         motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

@@ -93,7 +93,7 @@ public class enginerdsControl2 extends myLinearOpMode {
             motorBL.setPower(motorBLPower);
             motorBR.setPower(motorBRPower);
 
-            motorFARM.setPower(gamepad2.left_stick_y*0.5);
+            motorFARM.setPower(gamepad2.left_stick_y*0.3);
             //
             if(!hangMode) {
                 if ((-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) ||

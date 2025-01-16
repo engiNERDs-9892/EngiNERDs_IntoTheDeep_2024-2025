@@ -15,7 +15,7 @@ public class leftAutononmous extends myLinearOpMode {
         super.runOpMode();
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
-        servoArm.setPosition(servoPositions.ARM_UP);
+        servoArm.setPosition(myConstants.ARM_UP);
         odo.resetPosAndIMU();
         waitForStart();
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
