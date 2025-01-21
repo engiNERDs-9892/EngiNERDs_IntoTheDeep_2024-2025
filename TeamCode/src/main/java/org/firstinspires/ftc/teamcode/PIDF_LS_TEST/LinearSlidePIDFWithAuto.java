@@ -1,20 +1,24 @@
 package org.firstinspires.ftc.teamcode.PIDF_LS_TEST;
 
+import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_GRAB;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
+
+import android.transition.Slide;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.arcrobotics.ftclib.controller.PIDController;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+
 import org.firstinspires.ftc.teamcode.drive.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants;
@@ -30,7 +34,6 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
     public static double P = 0.021, I = 0, D = 0.0004;
 
     // Feedforward Component of the linear slides
-    public static double f = 0;
 
     private double target;
 
@@ -40,22 +43,29 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Lift lift = new Lift(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
+        motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFARM.setTargetPosition(myConstants.ARM_UP);
+        motorFARM.setPower(0.4);
         servoWrist.setPosition(servoPositions.WRIST_B);
-        motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         TrajectorySequence DropPreLoad = drive.trajectorySequenceBuilder(new Pose2d())
-                // Drives over to the basket right after the start of auto
+                // Has the Arm started in the up position
+                .addTemporalMarker(()->{
+                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                })
+
+                // Drives over to the top basket
                 .splineTo(new Vector2d(-0.5, 37), Math.toRadians(90))
 
-                // Drops the Preloaded Sample into the top basket
-                .addTemporalMarker(() -> {
+
+                // Drops the Pre Load in the Top Basket
+                .addTemporalMarker(()->{
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
                 })
@@ -68,44 +78,51 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
 
 
         TrajectorySequence Sample1High = drive.trajectorySequenceBuilder(DropPreLoad.end())
-                // Get the claws out of the top basket
-                .addTemporalMarker(0.75, () -> {
-                    servoWrist.setPosition(servoPositions.WRIST_B);
+
+                // Removes the claws and lowers the LS out of the top basket
+                .addTemporalMarker(0.2, () -> {
+                    servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
+                    servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
+                })
+                .addTemporalMarker(1.5, () -> {
                     SlidesDown();
+                    servoWrist.setPosition(servoPositions.WRIST_B);
                 })
 
-                // Drive to the Far Right Sample
+                // Drives over to the 1st Sample
                 .setTangent(Math.toRadians(270))
-                .splineToConstantHeading(
-                        new Vector2d(57, 1), 0
-                )
+                .splineToConstantHeading(new Vector2d(59, 2.25), 0)
 
-                // Lower arm to pick up Sample
-                .addTemporalMarker(() -> {
-                    motorFARM.setTargetPosition(myConstants.ARM_DOWN);
+                // Lower the arm to grab the 1st Sample
+                .addTemporalMarker(()->{
+                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_GRAB);
+                    motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
+                    servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
                 })
 
-                // Grab the 1st sample
+                // Grabs the 1st sample
                 .waitSeconds(0.9)
-                .addTemporalMarker(() -> {
+                .addTemporalMarker(()->{
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })
 
-                // Raise Linear slides to top basket height + Raises arm up
-                .waitSeconds(0.7)
-                .addTemporalMarker(() -> {
+                // Raises the Arm to the Top Basket
+                .waitSeconds(0.5)
+                .addTemporalMarker(()->{
                     motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     SlidesUp();
                 })
 
-                // Drive over to the top basket
-                .waitSeconds(0.8)
+                // Drives over to the top basket
+                .waitSeconds(0.5)
                 .setTangent(Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(-0.5, 37), Math.toRadians(90))
 
-                // Drop the First Sample in the top basket
-                .addTemporalMarker(() -> {
+                // Drops the 1st sample into the top basket
+                .addTemporalMarker(()->{
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
                 })
@@ -119,44 +136,53 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
 
 
         TrajectorySequence Sample2High = drive.trajectorySequenceBuilder(DropPreLoad.end())
-                // Removes the claws from the Top basket and lowers LS
-                .addTemporalMarker(0.75, () -> {
-                    servoWrist.setPosition(servoPositions.WRIST_B);
+
+                // Removes the claws from the top basket and lowers the LS
+                .addTemporalMarker(0.2, () -> {
+                    servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
+                    servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
+                })
+                .addTemporalMarker(1.5, () -> {
                     SlidesDown();
+                    servoWrist.setPosition(servoPositions.WRIST_B);
                 })
 
-                // Drives to pick up the Second sample
+                // Drives over to the 2nd sample
                 .setTangent(Math.toRadians(270))
                 .splineToConstantHeading(
-                        new Vector2d(57, 15.25), 0
+                        new Vector2d(59, 16.875), 0
                 )
 
-                // Lowers front arm to pick up the sample
-                .addTemporalMarker(() -> {
-                    motorFARM.setTargetPosition(myConstants.ARM_DOWN);
+                // Lowers the arm to grab the 2nd sample
+                .addTemporalMarker(()->{
+                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_GRAB);
+                    motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
+                    servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
                 })
 
-                // Closes the claws to pick up the sample
+                // Grabs the 2nd Sample
                 .waitSeconds(0.9)
-                .addTemporalMarker(() -> {
+                .addTemporalMarker(()->{
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })
 
-                // Raise Linear slides to top basket height + Raises Arm Up
-                .waitSeconds(0.7)
-                .addTemporalMarker(() -> {
+                // Raises the LS and Claws in order to play in the top basket
+                .waitSeconds(0.5)
+                .addTemporalMarker(()->{
                     motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     SlidesUp();
                 })
 
-                // Drives over to the baskets
-                .waitSeconds(0.3)
+                // Drives over to the basket
+                .waitSeconds(0.5)
                 .setTangent(Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(-0.5, 37), Math.toRadians(90))
 
-                // Drops the Sample into the top basket
-                .addTemporalMarker(() -> {
+                // Drops the 2nd sample into the top basket
+                .addTemporalMarker(()->{
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
                 })
@@ -169,48 +195,56 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
 
         TrajectorySequence Sample3High = drive.trajectorySequenceBuilder(DropPreLoad.end())
 
-                // Removes the claws from the top basket
-                .addTemporalMarker(0.75, () -> {
-                    servoWrist.setPosition(servoPositions.WRIST_B);
-                    SlidesDown();
-                })
 
-                // Drives over to the Last sample on the ground
-                .setTangent(Math.toRadians(270))
-                .splineToConstantHeading(
-                        new Vector2d(57, 27.125), 0
-                )
-
-                // Lowers the arm to pick up the sample
-                .addTemporalMarker(() -> {
-                    motorFARM.setTargetPosition(myConstants.ARM_DOWN);
-                })
-
-                // Closes the claws and grabs the sample
-                .waitSeconds(0.9)
-                .addTemporalMarker(() -> {
+                // Lowers the LS and Closes the claws in order to get them out of the top basket
+                .addTemporalMarker(0.2, () -> {
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })
-
-                // Raises the Arm and LS to the Height of the Top Basket
-                .waitSeconds(0.7)
-                .addTemporalMarker(() -> {
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
-                    SlidesUp();
+                .addTemporalMarker(1.5, () -> {
+                    SlidesDown();
+                    servoWrist.setPosition(servoPositions.WRIST_B);
                 })
 
-                // Drives over to the baskets
-                .waitSeconds(0.7)
-                .setTangent(Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-0.5, 37), Math.toRadians(90))
 
-                // Drops the sample in the top basket
-                .addTemporalMarker(() -> {
+                // Drives over to the 3rd sample
+                .setTangent(Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(59, 28.625), 0)
+
+
+                // Lowers the arm to pick up the 3rd Sample
+                .addTemporalMarker(()->{
+                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_GRAB);
+                    motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
                 })
 
+                // Grabs the 3rd Sample
+                .waitSeconds(1.2)
+                .addTemporalMarker(()->{
+                    servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
+                    servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
+                })
+
+                // Prepares the arm to drop the sample in the top basket
+                .waitSeconds(0.5)
+                .addTemporalMarker(()->{
+                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    SlidesUp();
+                })
+
+                // Drive over to the top basket
+                .waitSeconds(0.5)
+                .setTangent(Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-0.5, 37), Math.toRadians(90))
+
+                // Drop Sample 3 in the Top Basket
+                .addTemporalMarker(()->{
+                    servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
+                    servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
+                })
                 /////////
                 // END //
                 /////////

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static org.firstinspires.ftc.teamcode.myConstants.ARM_DOWN;
+import static org.firstinspires.ftc.teamcode.myConstants.ARM_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
@@ -42,6 +44,21 @@ public class enginerdsControl2 extends myLinearOpMode {
                 motorRR.setPower(0);
             }
         };
+        toggleButton armToggle = new toggleButton() {
+            @Override
+            public void toggleOn() {
+                motorFARM.setTargetPosition(ARM_UP);
+                motorFARM.setPower(0.3);
+                motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            @Override
+            public void toggleOff() {
+                motorFARM.setTargetPosition(ARM_DOWN);
+                motorFARM.setPower(0.25);
+                motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+        };
         toggleServo clawLeftToggle = new toggleServo(servoClawLeft, myConstants.servoPositions.CLAW_LEFT_OPEN, myConstants.servoPositions.CLAW_LEFT_CLOSED);
         toggleServo clawRightToggle = new toggleServo(servoClawRight, myConstants.servoPositions.CLAW_RIGHT_OPEN, myConstants.servoPositions.CLAW_RIGHT_CLOSED);
         toggleServo wristToggle = new toggleServo(servoWrist, myConstants.servoPositions.WRIST_A, myConstants.servoPositions.WRIST_B);
@@ -49,7 +66,7 @@ public class enginerdsControl2 extends myLinearOpMode {
         useFieldCentric = false;
         hangMode = false;
         //Run
-        while(opModeIsActive()){
+        while(opModeIsActive()) {
             odo.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
             //Wheels
             //Get gamepad input
@@ -68,19 +85,19 @@ public class enginerdsControl2 extends myLinearOpMode {
             double motorFRPower = (rotY - rotX - r);
             double motorBRPower = (rotY + rotX - r);
             denominator *= 1.5;
-            if(gamepad1.left_bumper){
+            if (gamepad1.left_bumper) {
                 denominator *= 2;
             }
-            if(gamepad1.right_bumper){
+            if (gamepad1.right_bumper) {
                 denominator *= 3;
             }
-            if(gamepad1.x){
+            if (gamepad1.x) {
                 useFieldCentric = true;
             }
-            if(gamepad1.y){
+            if (gamepad1.y) {
                 useFieldCentric = false;
             }
-            if(gamepad1.back){
+            if (gamepad1.back) {
                 odo.resetPosAndIMU();
             }
             motorFLPower /= denominator;
@@ -93,7 +110,10 @@ public class enginerdsControl2 extends myLinearOpMode {
             motorBL.setPower(motorBLPower);
             motorBR.setPower(motorBRPower);
 
-            motorFARM.setPower(gamepad2.left_stick_y*0.3);
+            if (gamepad2.left_stick_y != 0){
+                motorFARM.setPower(gamepad2.left_stick_y * 0.3);
+                motorFARM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
             //
             if(!hangMode) {
                 if ((-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) ||
@@ -111,10 +131,12 @@ public class enginerdsControl2 extends myLinearOpMode {
             hangToggle.update(gamepad2.back);
             clawLeftToggle.update(gamepad2.a);
             clawRightToggle.update(gamepad2.a);
+            armToggle.update(gamepad2.b);
             wristToggle.update(gamepad2.x);
             //
             telemetry.addData("Lifty", motorLL.getCurrentPosition());
             telemetry.addData("Risey", motorRR.getCurrentPosition());
+            telemetry.addData("FARM", motorFARM.getCurrentPosition());
             telemetry.addData("Field Centric", useFieldCentric);
             telemetry.update();
         }
