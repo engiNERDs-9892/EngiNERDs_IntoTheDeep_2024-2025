@@ -28,10 +28,6 @@ public class PIDFCodeWithoutAuto extends myLinearOpMode {
     // This allows you to change the LS position based on a function at the bottom of the code | "SlidesDown" & "SlidesUp"
     private double target;
 
-    // This is just a way to track the motors current position based on degrees rather than ticks
-    // Note that the number of ticks your motor has varies from motor to motor, so make sure you have the right number inputted
-    public final double ticks_in_degrees = 751.8  / 180;
-//                                         Ticks / Degrees
 
     @Override
     public void runOpMode() throws InterruptedException {

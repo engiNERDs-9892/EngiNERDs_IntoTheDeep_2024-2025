@@ -33,11 +33,9 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
     // Variables for the LS motors
     public static double P = 0.021, I = 0, D = 0.0004;
 
-    // Feedforward Component of the linear slides
-
+    // This allows you to change the LS position based on a function at the bottom of the code | "SlidesDown" & "SlidesUp"
     private double target;
 
-    public final double ticks_in_degrees = 751.8 / 180;
 
 
     @Override
