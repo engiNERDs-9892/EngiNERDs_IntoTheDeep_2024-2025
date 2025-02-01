@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.toggleButton;
 import org.firstinspires.ftc.teamcode.toggleServo;
 
 @TeleOp(group = "Beta")
-public class enginerdsControl2 extends myLinearOpMode {
+public class EngiNERDs_Control extends myLinearOpMode {
     public static boolean useFieldCentric;
     public static boolean hangMode;
 
@@ -61,10 +61,13 @@ public class enginerdsControl2 extends myLinearOpMode {
         };
         toggleServo clawLeftToggle = new toggleServo(servoClawLeft, myConstants.servoPositions.CLAW_LEFT_OPEN, myConstants.servoPositions.CLAW_LEFT_CLOSED);
         toggleServo clawRightToggle = new toggleServo(servoClawRight, myConstants.servoPositions.CLAW_RIGHT_OPEN, myConstants.servoPositions.CLAW_RIGHT_CLOSED);
+        toggleServo clawLeft2Toggle = new toggleServo(servoClawLeft2, myConstants.servoPositions.CLAW_LEFT_2_OPEN, myConstants.servoPositions.CLAW_LEFT_2_CLOSED);
+        toggleServo clawRight2Toggle = new toggleServo(servoClawRight2, myConstants.servoPositions.CLAW_RIGHT_2_OPEN, myConstants.servoPositions.CLAW_RIGHT_2_CLOSED);
         toggleServo wristToggle = new toggleServo(servoWrist, myConstants.servoPositions.WRIST_A, myConstants.servoPositions.WRIST_B);
         waitForStart();
         useFieldCentric = false;
         hangMode = false;
+
         //Run
         while(opModeIsActive()) {
             odo.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
@@ -113,6 +116,8 @@ public class enginerdsControl2 extends myLinearOpMode {
             if (gamepad2.left_stick_y != 0){
                 motorFARM.setPower(gamepad2.left_stick_y * 0.3);
                 motorFARM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }else if(motorFARM.getMode() == DcMotor.RunMode.RUN_WITHOUT_ENCODER){
+                motorFARM.setPower(0);
             }
             //
             if(!hangMode) {
@@ -131,7 +136,15 @@ public class enginerdsControl2 extends myLinearOpMode {
             hangToggle.update(gamepad2.back);
             clawLeftToggle.update(gamepad2.a);
             clawRightToggle.update(gamepad2.a);
-            armToggle.update(gamepad2.b);
+            clawLeft2Toggle.update(gamepad2.y);
+            clawRight2Toggle.update(gamepad2.y);
+            //armToggle.update(gamepad2.b);
+            if(gamepad2.b){
+                motorFARM.setTargetPosition(ARM_UP);
+                motorFARM.setPower(0.3);
+                motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
             wristToggle.update(gamepad2.x);
             //
             telemetry.addData("Lifty", motorLL.getCurrentPosition());

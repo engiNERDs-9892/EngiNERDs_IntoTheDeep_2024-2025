@@ -16,11 +16,15 @@ public class myConstants {
     public static double X_OFFSET = 139;//139
     public static double Y_OFFSET = -158 ;//-158
     public static int SLIDE_BOTTOM = 60;
-    public static int SLIDE_AUTO_GRAB = 100;
-    public static int SLIDE_TOP = 5000;
-    public static final int ARM_UP = 5;
+    public static int SLIDE_AUTO_SAMPLE_GRAB = 100;
+    public static int SLIDE_AUTO_SPECEMIN_GRAB = 900;
+    public static int SLIDE_HIGH_BASKET = 5300;
+    public static int SLIDE_TOP = 5300;
+    public static int SLIDE_HIGH_CHAMBER = 3700;
+    public static int SLIDE_HIGH_CHAMBER_PLAY = 2700;
+    public static final int ARM_UP = 10;
     public static final int ARM_DOWN = 340;
-    public static final int ARM_AUTO_GRAB = 380;
+    public static final int ARM_AUTO_SAMPLE_GRAB = 380;
 
 
     /*Circle direction
@@ -39,6 +43,11 @@ public class myConstants {
         public static final double CLAW_RIGHT_OPEN = 0.15;
         public static final double CLAW_LEFT_CLOSED = 0.47;
         public static final double CLAW_RIGHT_CLOSED = 0.535;
+
+        public static final double CLAW_LEFT_2_OPEN = 0.75;
+        public static final double CLAW_RIGHT_2_OPEN = 0.3;
+        public static final double CLAW_LEFT_2_CLOSED = 0.535;
+        public static final double CLAW_RIGHT_2_CLOSED = 0.515;
         public static final double WRIST_A = 0.5;
         public static final double WRIST_B = 0.825;
 

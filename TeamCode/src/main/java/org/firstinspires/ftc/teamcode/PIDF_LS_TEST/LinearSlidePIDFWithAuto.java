@@ -1,11 +1,5 @@
 package org.firstinspires.ftc.teamcode.PIDF_LS_TEST;
 
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_GRAB;
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
-
-import android.transition.Slide;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -18,8 +12,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.arcrobotics.ftclib.controller.PIDController;
 
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-
 import org.firstinspires.ftc.teamcode.drive.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants;
@@ -27,8 +19,8 @@ import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Autonomous(group = "advanced", preselectTeleOp = "enginerdsControl2")
-@Disabled
+@Autonomous(group = "advanced", preselectTeleOp = "EngiNERDs_Control")
+//@Disabled
 public class LinearSlidePIDFWithAuto extends myLinearOpMode {
     private PIDController controller;
 
@@ -95,7 +87,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
 
                 // Lower the arm to grab the 1st Sample
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_GRAB);
+                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -155,7 +147,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
 
                 // Lowers the arm to grab the 2nd sample
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_GRAB);
+                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -214,7 +206,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
 
                 // Lowers the arm to pick up the 3rd Sample
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_GRAB);
+                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -322,7 +314,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
     public void SlidesDown() {target = 0;} // adjust
 
     // Sets the target of the LS to go all the way up
-    public void SlidesUp() {target = 5500; } // adjust
+    public void SlidesUp() {target = myConstants.SLIDE_TOP; } // adjust
 
 
     // Assume we have a hardware class called lift

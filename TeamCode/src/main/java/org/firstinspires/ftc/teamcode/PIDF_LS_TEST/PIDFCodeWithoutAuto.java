@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 
 @Disabled
-@Autonomous(group = "advanced", preselectTeleOp = "enginerdsControl2")
+@Autonomous(group = "advanced", preselectTeleOp = "EngiNERDs_Control")
 public class PIDFCodeWithoutAuto extends myLinearOpMode {
 
     // Sets a variable to reach out to the FTC Lib to help calculate the proper speed

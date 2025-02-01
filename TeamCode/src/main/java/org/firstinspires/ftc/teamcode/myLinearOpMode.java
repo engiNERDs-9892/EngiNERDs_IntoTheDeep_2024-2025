@@ -17,6 +17,8 @@ public class myLinearOpMode extends LinearOpMode {
     protected static DcMotor motorFARM;
     protected static Servo servoClawLeft;
     protected static Servo servoClawRight;
+    protected static Servo servoClawLeft2;
+    protected static Servo servoClawRight2;
     protected static Servo servoArm;
     protected static Servo servoWrist;
     protected static GoBildaPinpointDriver odo;
@@ -37,6 +39,8 @@ public class myLinearOpMode extends LinearOpMode {
         motorFARM = hardwareMap.dcMotor.get("motorFARM");
         servoClawLeft = hardwareMap.servo.get("servoClawLeft");
         servoClawRight = hardwareMap.servo.get("servoClawRight");
+        servoClawLeft2 = hardwareMap.servo.get("servo2Left");
+        servoClawRight2 = hardwareMap.servo.get("servo2Right");
         servoWrist = hardwareMap.servo.get("servoWrist");
         //imu = hardwareMap.get(IMU.class, "imu");
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
@@ -54,6 +58,7 @@ public class myLinearOpMode extends LinearOpMode {
         motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorRR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorRR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFARM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //Initialize servos

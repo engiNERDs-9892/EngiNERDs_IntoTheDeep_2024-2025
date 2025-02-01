@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_GRAB;
+import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_SAMPLE_GRAB;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Autonomous(group = "advanced", preselectTeleOp = "enginerdsControl2")
+@Autonomous(group = "advanced", preselectTeleOp = "EngiNERDs_Control")
 public class leftAutonomousRoadrunner extends myLinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -50,8 +50,8 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })
                 .addTemporalMarker(1.5, () -> {
-                    motorLL.setTargetPosition(SLIDE_AUTO_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_GRAB);
+                    motorLL.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
+                    motorRR.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
                     servoWrist.setPosition(servoPositions.WRIST_B);
                 })
                 .setTangent(Math.toRadians(270))
@@ -60,7 +60,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 )
 
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_GRAB);
+                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -92,8 +92,8 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })
                 .addTemporalMarker(1.5, () -> {
-                    motorLL.setTargetPosition(SLIDE_AUTO_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_GRAB);
+                    motorLL.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
+                    motorRR.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
                     servoWrist.setPosition(servoPositions.WRIST_B);
                 })
                 .setTangent(Math.toRadians(270))
@@ -102,7 +102,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 )
 
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_GRAB);
+                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -133,8 +133,8 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })
                 .addTemporalMarker(1.5, () -> {
-                    motorLL.setTargetPosition(SLIDE_AUTO_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_GRAB);
+                    motorLL.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
+                    motorRR.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
                     servoWrist.setPosition(servoPositions.WRIST_B);
                 })
                 .setTangent(Math.toRadians(270))
@@ -143,7 +143,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 )
 
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_GRAB);
+                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -177,8 +177,8 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
                 .addDisplacementMarker(() -> {
-                    motorLL.setTargetPosition(SLIDE_AUTO_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_GRAB);
+                    motorLL.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
+                    motorRR.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
                 })
                 .lineToConstantHeading(
                         new Vector2d(35, -20),
@@ -198,7 +198,9 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     motorRR.setTargetPosition(SLIDE_BOTTOM);
                     servoWrist.setPosition(servoPositions.WRIST_B);
                 })
-                .back(30)
+                //.back(30)
+                .setTangent(270)
+                .splineToSplineHeading(new Pose2d(50, 0, Math.toRadians(270)), Math.toRadians(270))
                 .build();
         waitForStart();
 
