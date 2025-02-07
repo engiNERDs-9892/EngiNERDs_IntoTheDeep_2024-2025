@@ -44,7 +44,7 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
                     motorFARM.setTargetPosition(myConstants.ARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 })
-                .splineToConstantHeading(new Vector2d(47.5, -8), 0)//Adjust x offset
+                .splineToConstantHeading(new Vector2d(48.00, -7), 0)//Adjust x offset
                 .build();
         TrajectorySequence trajectoryPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //Go from Poles to spike marks
@@ -119,21 +119,22 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
                 .build();
         TrajectorySequence trajectoryPushPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 .setReversed(true)
-                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
                 .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(35))
                 .splineTo(new Vector2d(24, -24), Math.toRadians(260)) //Rotate and go out
                 .splineToConstantHeading(new Vector2d(72, -42), Math.toRadians(0)) //Go Around the submersable
                 .splineToConstantHeading(new Vector2d(72, -52), Math.toRadians(180)) // Go up and around the block
                 //Go to wall
                 .splineToConstantHeading(new Vector2d(18, -52), Math.toRadians(180)) //Push the block in
-                .resetConstraints()
-                .splineToConstantHeading(new Vector2d(72, -52), Math.toRadians(180))
-                .strafeRight(52)
-                .back(15)
-                .strafeLeft(52)
-                .strafeRight(52)
-                .back(12)
-                .strafeLeft(52)
+                //.resetConstraints()
+                .splineToConstantHeading(new Vector2d(72, -60), Math.toRadians(270))//Go back around
+                .splineToConstantHeading(new Vector2d(18, -64), Math.toRadians(180))//Push it again
+                .strafeRight(54)
+                .back(14)
+                .strafeLeft(54)
+                .strafeRight(54)
+                .back(11)
+                .strafeLeft(54)
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPreload = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
