@@ -11,17 +11,14 @@ import org.rowlandhall.meepmeep.roadrunner.trajectorysequence.TrajectorySequence
 import org.rowlandhall.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 
 public class MeepMeepTesting {
-    private static class drivewrapper{
+    private static class DriveWrapper {
         private class TrajectorySequenceBuilderWrapper {
             TrajectorySequenceBuilder innerBuilder;
             double offsetX;
             double offsetY;
             double rotate;
             double scale;
-            private Pose2d rotatePose2d(Pose2d pose, double angle){
-                Vector2d rotated = pose.vec().rotated(angle);
-                return new Pose2d(rotated.getX(), rotated.getY(), pose.getHeading()+angle);
-            }
+
             private Pose2d transformPose2d(Pose2d pose){
                 Vector2d rotated = pose.vec().rotated(rotate).times(scale);
                 return new Pose2d(rotated.getX()+offsetX, rotated.getY()+offsetY, pose.getHeading()+rotate);
@@ -29,6 +26,12 @@ public class MeepMeepTesting {
             private Vector2d transformVector2d(Vector2d vec){
                 Vector2d rotated = vec.rotated(rotate).times(scale);
                 return new Vector2d(rotated.getX()+offsetX, rotated.getY()+offsetY);
+            }
+            private double transformDistance(double distance){
+                return distance*scale;
+            }
+            private double transformAngle(double angle){
+                return angle+rotate;
             }
             TrajectorySequenceBuilderWrapper(Pose2d startPose, DriveShim innerDriveShim, double offsetX, double offestY, double rotate, double scale){
                 this.offsetX = offsetX;
@@ -42,21 +45,74 @@ public class MeepMeepTesting {
                 return this;
             }
             TrajectorySequenceBuilderWrapper setTangent(double tangent){
-                innerBuilder.setTangent(tangent+rotate);
+                innerBuilder.setTangent(transformAngle(tangent));
                 return this;
             }
             TrajectorySequenceBuilderWrapper resetConstraints() {
                 innerBuilder.resetConstraints();
                 return this;
+            }//constraints and markers
+            TrajectorySequenceBuilderWrapper waitSeconds(double seconds) {
+                innerBuilder.waitSeconds(seconds);
+                return this;
             }
             TrajectorySequenceBuilderWrapper splineTo(Vector2d endPosition, double endTangent){
-                innerBuilder.splineTo(transformVector2d(endPosition), endTangent+rotate);
+                innerBuilder.splineTo(transformVector2d(endPosition), transformAngle(endTangent));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper splineToLinearHeading(Pose2d endPose, double endTangent) {
+                innerBuilder.splineToLinearHeading(transformPose2d(endPose), transformAngle(endTangent));
                 return this;
             }
             TrajectorySequenceBuilderWrapper splineToConstantHeading(Vector2d endPosition, double endTangent) {
-                innerBuilder.splineToConstantHeading(transformVector2d(endPosition), endTangent+rotate);
+                innerBuilder.splineToConstantHeading(transformVector2d(endPosition), transformAngle(endTangent));
                 return this;
             }
+            TrajectorySequenceBuilderWrapper splineToSplineHeading(Pose2d endPose, double endTangent) {
+                innerBuilder.splineToSplineHeading(transformPose2d(endPose), transformAngle(endTangent));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper lineTo(Vector2d endPosition) {
+                innerBuilder.lineTo(transformVector2d(endPosition));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper lineToLinearHeading(Pose2d endPose) {
+                innerBuilder.lineToLinearHeading(transformPose2d(endPose));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper lineToConstantHeading(Vector2d endPosition) {
+                innerBuilder.lineToConstantHeading(transformVector2d(endPosition));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper lineToSplineHeading(Pose2d endPose) {
+                innerBuilder.lineToSplineHeading(transformPose2d(endPose));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper strafeTo(Vector2d endPosition) {
+                innerBuilder.strafeTo(transformVector2d(endPosition));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper forward(double distance){
+                innerBuilder.forward(transformDistance(distance));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper back(double distance){
+                innerBuilder.back(transformDistance(distance));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper strafeLeft(double distance){
+                innerBuilder.strafeLeft(transformDistance(distance));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper strafeRight(double distance){
+                innerBuilder.strafeRight(transformDistance(distance));
+                return this;
+            }
+            TrajectorySequenceBuilderWrapper turn(double angle){
+                innerBuilder.turn(angle);
+                return this;
+            }
+
             TrajectorySequence build(){
                 return innerBuilder.build();
             }
@@ -67,7 +123,7 @@ public class MeepMeepTesting {
         double offsetY;
         double rotate;
         double scale;
-        drivewrapper(DriveShim drive, double offsetX, double offsetY, double rotate, double scale){
+        DriveWrapper(DriveShim drive, double offsetX, double offsetY, double rotate, double scale){
             this.innerDriveShim = drive;
             this.offsetX = offsetX;
             this.offsetY = offsetY;
@@ -101,7 +157,7 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(40, 25, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        new drivewrapper(drive, 5, -65, Math.toRadians(90), 0.80)
+                        new DriveWrapper(drive, 5, -65, Math.toRadians(90), 0.80)
                         .trajectorySequenceBuilder(new Pose2d(0, 0, Math.toRadians(0)))
                         //
                         .splineToConstantHeading(new Vector2d(47.5, -8), 0)
