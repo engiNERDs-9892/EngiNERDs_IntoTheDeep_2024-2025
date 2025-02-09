@@ -64,42 +64,50 @@ public class MeepMeepTesting {
                         new DriveWrapper(drive, 5, -65, Math.toRadians(90), 0.70)
                                 .trajectorySequenceBuilder(new Pose2d(0, 0, 0))
                                 //Play Preload
-                                .splineToConstantHeading(new Vector2d(48.10, -7), 0)
+                                .splineToConstantHeading(new Vector2d(47.75, 4), 0)//Adjust x offset
                                 //Block
+
+                                //Go from Poles to spike marks
                                 .setReversed(true)
+                                //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                                //.setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(20*3))
                                 .splineTo(new Vector2d(24, -24), Math.toRadians(270)) //Rotate and go out
                                 .splineToConstantHeading(new Vector2d(72, -42), Math.toRadians(0)) //Go Around the submersable
                                 .splineToConstantHeading(new Vector2d(72, -55), Math.toRadians(180)) // Go up and around the block
                                 //Go to wall
                                 .splineToConstantHeading(new Vector2d(68, -55), Math.toRadians(180)) //Finish pushing the block in
-                                .strafeLeft(49)
-                                .resetConstraints()
-                                //Play
-                                .setTangent(Math.toRadians(90))
-                                .splineTo(new Vector2d(.5, -56), Math.toRadians(180))
-                                .waitSeconds(0.3)
-                                .waitSeconds(0.8)
-                                //Go to chamber
-                                //.back(40)
-                                //.splineToLinearHeading(new Pose2d(47.25, -1, Math.toRadians(0)), 0)
-                                //.setReversed(false)
-                                //.splineTo(new Vector2d(47.25, -1), Math.toRadians(0))
-                                .back(10)
-                                .splineToSplineHeading(new Pose2d(47.25, -1, -0.0001), Math.toRadians(0))
-                                //Play
-                                .setReversed(true)
-                                //.splineToLinearHeading(new Pose2d(0.5, -56, Math.toRadians(180)), Math.toRadians(180))
-                                .back(40)
-                                //.splineToLinearHeading(new Pose2d(47.25, -1, Math.toRadians(0)), 0)
                                 .setReversed(false)
-                                .splineTo(new Vector2d(0.5, -56), Math.toRadians(180))
+                                .strafeLeft(52)
 
+
+                                .setTangent(Math.toRadians(90))
+                                .splineTo(new Vector2d(1.6, -38), Math.toRadians(180))
+                                //.addTemporalMarker(()->{
+                                //    servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
+                                //    servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
+                                //})
                                 .waitSeconds(0.3)
-                                .waitSeconds(0.8)
-                                .back(10)
                                 //Go to chamber
-                                .setTangent(90)
-                                .splineToSplineHeading(new Pose2d(47.25, 4, Math.toRadians(0)), 0)
+                                //.addTemporalMarker(()->{
+                                //    lift.setTarget(SLIDE_HIGH_CHAMBER);
+                                //})
+                                .splineToLinearHeading(new Pose2d(48.5, 1, Math.toRadians(0)), Math.toRadians(0))
+
+                                .setReversed(true)
+                                .splineToSplineHeading(new Pose2d(0.6, -36, Math.toRadians(180)), Math.toRadians(180))
+                                //Grab
+                                //.addTemporalMarker(()->{
+                                //    servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
+                                //    servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
+                                //})
+                                .waitSeconds(0.3)
+                                //Go to chamber
+                                //.addTemporalMarker(()->{
+                                //    lift.setTarget(SLIDE_HIGH_CHAMBER);
+                                //})
+                                .setTangent(Math.toRadians(90))
+                                .splineToLinearHeading(new Pose2d(49.5, -3, 0), 0)
+                                .lineTo(new Vector2d(1, -55))
                                 .build()
                 );
 

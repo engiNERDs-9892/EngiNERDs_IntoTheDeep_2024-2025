@@ -8,13 +8,12 @@ import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_HIGH_CHAMBER_PLAY
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
@@ -22,12 +21,13 @@ import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(group = "advanced", preselectTeleOp = "EngiNERDs_Control")
-@Disabled
-public class rightAutonomousSpecemin extends myLinearOpMode {
+public class rightAutonomousSpeceminPID extends myLinearOpMode {
+    SampleMecanumDrive drive;
+
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();//Initialization
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive = new SampleMecanumDrive(hardwareMap);
         servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
         servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
@@ -36,23 +36,19 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
         motorFARM.setTargetPosition(myConstants.ARM_UP);
         motorFARM.setPower(0.6);
         servoWrist.setPosition(servoPositions.WRIST_A);
-        motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLL.setPower(1.0);
-        motorRR.setPower(1.0);
+
+        ((PIDFLift)lift).P = 0.01;
         //Trajectories
         TrajectorySequence trajectoryPlayPreload = drive.trajectorySequenceBuilder(new Pose2d())
                 .addTemporalMarker(()->{
                     motorFARM.setTargetPosition(myConstants.ARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 })
-                .splineToConstantHeading(new Vector2d(49, 4
-                ), 0)//Adjust x offset
+                .splineToConstantHeading(new Vector2d(47.75, 6), 0)//Adjust x offset
                 .build();
         TrajectorySequence trajectoryPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 .addTemporalMarker(1.0, ()->{
-                    motorRR.setTargetPosition(SLIDE_BOTTOM);
-                    motorLL.setTargetPosition(SLIDE_BOTTOM);
+                    lift.setTarget(SLIDE_BOTTOM);
                 })
                 //Go from Poles to spike marks
                 .setReversed(true)
@@ -70,27 +66,21 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
         TrajectorySequence trajectoryPlayAfterPush = drive.trajectorySequenceBuilder(trajectoryPush.end())
                 //Grab wall
                 .addTemporalMarker(1.0, ()->{
-                    motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
+                    lift.setTarget(SLIDE_AUTO_SPECEMIN_GRAB);
                 })
 
                 .setTangent(Math.toRadians(90))
-                .splineTo(new Vector2d(.6, -38), Math.toRadians(180))
+                .splineTo(new Vector2d(1.6, -38), Math.toRadians(180))
                 .addTemporalMarker(()->{
                     servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
                     servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
                 })
                 .waitSeconds(0.3)
+                //Go to chamber5
                 .addTemporalMarker(()->{
-                    motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
+                    lift.setTarget(SLIDE_HIGH_CHAMBER);
                 })
-                //Go to chamber
-                .addTemporalMarker(()->{
-                    motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER);
-                    motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER);
-                })
-                .lineToLinearHeading(new Pose2d(48.5, 1, 0))
+                .splineToLinearHeading(new Pose2d(48.5-0.5, 3, Math.toRadians(0)), Math.toRadians(0))
                 .build();
         TrajectorySequence trajectoryPushPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 .setReversed(true)
@@ -113,8 +103,7 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
         TrajectorySequence trajectoryPlayAfterPushPush = drive.trajectorySequenceBuilder(trajectoryPushPush.end())
                 //Grab wall
                 .addTemporalMarker(()->{
-                    motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
+                    lift.setTarget(SLIDE_AUTO_SPECEMIN_GRAB);
                 })
 
                 .setTangent(Math.toRadians(90))
@@ -124,21 +113,15 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
                     servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
                 })
                 .waitSeconds(0.3)
-                .addTemporalMarker(()->{
-                    motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
-                })
                 //Go to chamber
                 .addTemporalMarker(()->{
-                    motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER);
-                    motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER);
+                    lift.setTarget(SLIDE_HIGH_CHAMBER);
                 })
                 .lineToLinearHeading(new Pose2d(48, 1, 0))
                 .build();
         TrajectorySequence trajectoryPlay2AfterPush = drive.trajectorySequenceBuilder(trajectoryPlayAfterPush.end())
                 .addTemporalMarker(1.0, ()->{
-                    motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
+                    lift.setTarget(SLIDE_AUTO_SPECEMIN_GRAB);
                 })
                 //Go to grab
                 .setReversed(true)
@@ -149,31 +132,24 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
                     servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
                 })
                 .waitSeconds(0.3)
-                .addTemporalMarker(()->{
-                    motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
-                })
                 //Go to chamber
                 .addTemporalMarker(()->{
-                    motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER);
-                    motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER);
+                    lift.setTarget(SLIDE_HIGH_CHAMBER);
                 })
-                .splineToLinearHeading(new Pose2d(49.5, -3, 0), 0)
+                .splineToLinearHeading(new Pose2d(49.5-25, -3, 0), 0)
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPreload = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
                 .back(10)
                 .addTemporalMarker(()->{
-                    motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
+                    lift.setTarget(SLIDE_AUTO_SPECEMIN_GRAB);
                 })
                 .splineToSplineHeading(new Pose2d(11.6, -56, Math.toRadians(180)), Math.toRadians(180))
                 .forward(10)
                 .build();
         TrajectorySequence trajectoryPark = drive.trajectorySequenceBuilder(trajectoryPlay2AfterPush.end())
                 .addTemporalMarker(1.0, ()->{
-                    motorRR.setTargetPosition(SLIDE_BOTTOM);
-                    motorLL.setTargetPosition(SLIDE_BOTTOM);
+                    lift.setTarget(SLIDE_BOTTOM);
                 })
                 .lineTo(new Vector2d(1, -55))
                 .build();
@@ -184,21 +160,23 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
 
         motorFARM.setTargetPosition(ARM_UP);
         motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER);
-        motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER);
-        motorLL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setActive(true);
+        lift.setTarget(SLIDE_HIGH_CHAMBER);
 
-
-        drive.followTrajectorySequence(trajectoryPlayPreload);
+        drive.followTrajectorySequenceAsync(trajectoryPlayPreload);
+        updateEverything();
         hangSpecemin();
-        drive.followTrajectorySequence(trajectoryPush);
-        drive.followTrajectorySequence(trajectoryPlayAfterPush);
+        sleep(500);
+        drive.followTrajectorySequenceAsync(trajectoryPush);
+        updateEverything();
+        drive.followTrajectorySequenceAsync(trajectoryPlayAfterPush);
+        updateEverything();
+        hangSpecemin(-50);
+        drive.followTrajectorySequenceAsync(trajectoryPlay2AfterPush);
+        updateEverything();
         hangSpecemin();
-        drive.followTrajectorySequence(trajectoryPlay2AfterPush);
-        hangSpecemin();
-        drive.followTrajectorySequence(trajectoryPark);
-
+        drive.followTrajectorySequenceAsync(trajectoryPark);
+        updateEverything();
         //DONE
         telemetry.addData("Time", timer.seconds());
         telemetry.update();
@@ -207,14 +185,37 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
 
     //Functions
     private void hangSpecemin (){
-        motorLL.setPower(0.9);
-        motorRR.setPower(0.9);
-        motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER_PLAY);
-        motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER_PLAY);
-        sleep(700);
-        motorLL.setPower(1.0);
-        motorRR.setPower(1.0);
+        lift.setTarget(SLIDE_HIGH_CHAMBER_PLAY);
+        updateEverything(700);
         servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
         servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
+    }
+    private void hangSpecemin (double hangOffset){
+        lift.setTarget(SLIDE_HIGH_CHAMBER_PLAY+hangOffset);
+        updateEverything(700);
+        servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
+        servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
+    }
+    void updateEverything(){
+        while (opModeIsActive() && drive.isBusy()) {
+            drive.update();
+            lift.update();
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            // Continually write pose to `PoseStorage`
+            PoseStorage.currentPose = poseEstimate;
+            telemetry.update();
+        }
+    }
+    void updateEverything(double milliseconds){
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+        while (opModeIsActive() && timer.milliseconds() < milliseconds) {
+            drive.update();
+            lift.update();
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            // Continually write pose to `PoseStorage`
+            PoseStorage.currentPose = poseEstimate;
+            telemetry.update();
+        }
     }
 }

@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(group = "advanced", preselectTeleOp = "EngiNERDs_Control")
-public class leftAutonomousRoadrunnerPIDF extends myLinearOpMode {
+public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
     SampleMecanumDrive drive;
     @Override
     public void runOpMode() throws InterruptedException {

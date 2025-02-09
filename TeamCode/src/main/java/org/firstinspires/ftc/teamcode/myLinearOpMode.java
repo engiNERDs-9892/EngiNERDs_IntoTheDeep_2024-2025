@@ -109,7 +109,6 @@ public class myLinearOpMode extends LinearOpMode {
         motorBL.setPower(power);
         motorBR.setPower(power);
     }
-    public static double P = 0.021, I = 0, D = 0.0004;
     public interface Lift{
         public void setTarget(double target);
         public void update();
@@ -117,6 +116,7 @@ public class myLinearOpMode extends LinearOpMode {
         void setActive(boolean active);
     }
     public class PIDFLift implements Lift{
+        public double P = 0.021, I = 0, D = 0.0004;
         PIDController controller;
         private boolean useTelemetry;
 
