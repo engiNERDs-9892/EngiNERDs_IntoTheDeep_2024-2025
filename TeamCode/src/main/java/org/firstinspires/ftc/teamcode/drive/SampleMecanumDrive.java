@@ -55,8 +55,8 @@ import java.util.List;
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
     public static int POSE_HISTORY_LIMIT = -1;
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(14, 2.5, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 1.5, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(12+2, 2.5, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5+1, 1.5, 0);
 
     public static double LATERAL_MULTIPLIER = 1.16;
 

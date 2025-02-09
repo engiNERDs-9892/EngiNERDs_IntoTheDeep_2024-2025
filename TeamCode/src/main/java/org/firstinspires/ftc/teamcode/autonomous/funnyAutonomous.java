@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous
+@Disabled
 public class funnyAutonomous extends LinearOpMode {
     String[] story = {
             "In a factory so vast and grand, A lonely robot stands, unsmiling and bland. Wires and circuits, gleaming so bright, Yet in its eyes, a perpetual night.",

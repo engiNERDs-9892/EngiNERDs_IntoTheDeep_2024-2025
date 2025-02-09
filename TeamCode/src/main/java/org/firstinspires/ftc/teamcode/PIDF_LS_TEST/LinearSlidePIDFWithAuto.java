@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(group = "advanced", preselectTeleOp = "EngiNERDs_Control")
-//@Disabled
+@Disabled
 public class LinearSlidePIDFWithAuto extends myLinearOpMode {
     private PIDController controller;
 

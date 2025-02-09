@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 
 
 @TeleOp(group="Testing")
+@Disabled
 public class Pinpoint_Tuner2 extends LinearOpMode {
     public static DcMotor frontLeftMotor;
     public static DcMotor backLeftMotor;

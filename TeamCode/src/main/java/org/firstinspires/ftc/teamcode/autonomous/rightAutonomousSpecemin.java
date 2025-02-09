@@ -44,97 +44,119 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
                     motorFARM.setTargetPosition(myConstants.ARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 })
-                .splineToConstantHeading(new Vector2d(48.00, -7), 0)//Adjust x offset
+                .splineToConstantHeading(new Vector2d(49, 4
+                ), 0)//Adjust x offset
                 .build();
         TrajectorySequence trajectoryPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
+                .addTemporalMarker(1.0, ()->{
+                    motorRR.setTargetPosition(SLIDE_BOTTOM);
+                    motorLL.setTargetPosition(SLIDE_BOTTOM);
+                })
                 //Go from Poles to spike marks
                 .setReversed(true)
-                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
-                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(25))
+                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(20*3))
                 .splineTo(new Vector2d(24, -24), Math.toRadians(270)) //Rotate and go out
                 .splineToConstantHeading(new Vector2d(72, -42), Math.toRadians(0)) //Go Around the submersable
-                .splineToConstantHeading(new Vector2d(72, -52), Math.toRadians(180)) // Go up and around the block
+                .splineToConstantHeading(new Vector2d(72, -55), Math.toRadians(180)) // Go up and around the block
                 //Go to wall
-                .splineToConstantHeading(new Vector2d(18, -52), Math.toRadians(180)) //Push the block in
+                .splineToConstantHeading(new Vector2d(68, -55), Math.toRadians(180)) //Finish pushing the block in
+                .setReversed(false)
+                .strafeLeft(52)
                 .resetConstraints()
                 .build();
         TrajectorySequence trajectoryPlayAfterPush = drive.trajectorySequenceBuilder(trajectoryPush.end())
+                //Grab wall
+                .addTemporalMarker(1.0, ()->{
+                    motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
+                    motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
+                })
+
+                .setTangent(Math.toRadians(90))
+                .splineTo(new Vector2d(.6, -38), Math.toRadians(180))
+                .addTemporalMarker(()->{
+                    servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
+                    servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
+                })
+                .waitSeconds(0.3)
+                .addTemporalMarker(()->{
+                    motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
+                    motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
+                })
+                //Go to chamber
+                .addTemporalMarker(()->{
+                    motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER);
+                    motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER);
+                })
+                .lineToLinearHeading(new Pose2d(48.5, 1, 0))
+                .build();
+        TrajectorySequence trajectoryPushPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
+                .setReversed(true)
+                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(20*3))
+                .splineTo(new Vector2d(24, -24), Math.toRadians(270)) //Rotate and go out
+                .splineToConstantHeading(new Vector2d(72, -42), Math.toRadians(0)) //Go Around the submersable
+                .splineToConstantHeading(new Vector2d(72, -53.5), Math.toRadians(180))// Go up and around the block
+                //Go to wall
+                .splineToConstantHeading(new Vector2d(68, -53.5), Math.toRadians(180))//Start Block
+                .strafeLeft(49)//Finish pushing the block in
+                //Second block
+                .splineToConstantHeading(new Vector2d(72, -56), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(68, -69), Math.toRadians(180))//Start Block
+                .strafeLeft(52)//Finish pushing the block in
+                //Third block
+                .splineToConstantHeading(new Vector2d(77, -80), Math.toRadians(270))
+                .strafeLeft(60)//Pushing the block in all the way
+                .build();
+        TrajectorySequence trajectoryPlayAfterPushPush = drive.trajectorySequenceBuilder(trajectoryPushPush.end())
                 //Grab wall
                 .addTemporalMarker(()->{
                     motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
                     motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
                 })
-                .splineToLinearHeading(new Pose2d(10.9, -56, Math.toRadians(180)), Math.toRadians(180))
-                .forward(10)
+
+                .setTangent(Math.toRadians(90))
+                .splineTo(new Vector2d(.6, -38), Math.toRadians(180))
                 .addTemporalMarker(()->{
                     servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
                     servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
                 })
-                .waitSeconds(0.5)
+                .waitSeconds(0.3)
                 .addTemporalMarker(()->{
                     motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
                     motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
                 })
-                .waitSeconds(1.0)
-                .back(10)
                 //Go to chamber
                 .addTemporalMarker(()->{
                     motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER);
                     motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER);
                 })
-                .splineToLinearHeading(new Pose2d(47.25, -1, Math.toRadians(0)), 0)
-                .addTemporalMarker(()->{
-                    hangSpecemin();
-                })
-                //.back(10)
-
-
-                .addTemporalMarker(()->{
+                .lineToLinearHeading(new Pose2d(48, 1, 0))
+                .build();
+        TrajectorySequence trajectoryPlay2AfterPush = drive.trajectorySequenceBuilder(trajectoryPlayAfterPush.end())
+                .addTemporalMarker(1.0, ()->{
                     motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
                     motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB);
                 })
-                .splineToLinearHeading(new Pose2d(10.9, -56, Math.toRadians(180)), Math.toRadians(180))
-                .forward(10)
+                //Go to grab
+                .setReversed(true)
+                .splineToSplineHeading(new Pose2d(0.6, -36, Math.toRadians(180)), Math.toRadians(180))
+                //Grab
                 .addTemporalMarker(()->{
                     servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
                     servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
                 })
-                .waitSeconds(0.5)
+                .waitSeconds(0.3)
                 .addTemporalMarker(()->{
                     motorLL.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
                     motorRR.setTargetPosition(SLIDE_AUTO_SPECEMIN_GRAB+600);
                 })
-                .waitSeconds(1.0)
-                .back(10)
                 //Go to chamber
                 .addTemporalMarker(()->{
                     motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER);
                     motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER);
                 })
-                .splineToLinearHeading(new Pose2d(47.25, 4, Math.toRadians(0)), 0)
-                .addTemporalMarker(()->{
-                    hangSpecemin();
-                })
-                .back(10)
-                .build();
-        TrajectorySequence trajectoryPushPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
-                .setReversed(true)
-                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
-                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(35))
-                .splineTo(new Vector2d(24, -24), Math.toRadians(260)) //Rotate and go out
-                .splineToConstantHeading(new Vector2d(72, -42), Math.toRadians(0)) //Go Around the submersable
-                .splineToConstantHeading(new Vector2d(72, -52), Math.toRadians(180)) // Go up and around the block
-                //Go to wall
-                .splineToConstantHeading(new Vector2d(18, -52), Math.toRadians(180)) //Push the block in
-                //.resetConstraints()
-                .splineToConstantHeading(new Vector2d(72, -60), Math.toRadians(270))//Go back around
-                .splineToConstantHeading(new Vector2d(18, -64), Math.toRadians(180))//Push it again
-                .strafeRight(54)
-                .back(14)
-                .strafeLeft(54)
-                .strafeRight(54)
-                .back(11)
-                .strafeLeft(54)
+                .splineToLinearHeading(new Pose2d(49.5, -3, 0), 0)
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPreload = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
@@ -145,6 +167,13 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
                 })
                 .splineToSplineHeading(new Pose2d(11.6, -56, Math.toRadians(180)), Math.toRadians(180))
                 .forward(10)
+                .build();
+        TrajectorySequence trajectoryPark = drive.trajectorySequenceBuilder(trajectoryPlay2AfterPush.end())
+                .addTemporalMarker(1.0, ()->{
+                    motorRR.setTargetPosition(SLIDE_BOTTOM);
+                    motorLL.setTargetPosition(SLIDE_BOTTOM);
+                })
+                .lineTo(new Vector2d(1, -55))
                 .build();
         waitForStart();//waitForStart();
 
@@ -161,9 +190,12 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
 
         drive.followTrajectorySequence(trajectoryPlayPreload);
         hangSpecemin();
-        drive.followTrajectorySequence(trajectoryPushPush);
-        //drive.followTrajectorySequence(trajectoryPlayAfterPush);
-
+        drive.followTrajectorySequence(trajectoryPush);
+        drive.followTrajectorySequence(trajectoryPlayAfterPush);
+        hangSpecemin();
+        drive.followTrajectorySequence(trajectoryPlay2AfterPush);
+        hangSpecemin();
+        drive.followTrajectorySequence(trajectoryPark);
 
         //DONE
         telemetry.addData("Time", timer.seconds());
@@ -173,17 +205,14 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
 
     //Functions
     private void hangSpecemin (){
-        motorLL.setPower(0.7);
-        motorRR.setPower(0.7);
+        motorLL.setPower(0.9);
+        motorRR.setPower(0.9);
         motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER_PLAY);
         motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER_PLAY);
-        sleep(1500);
+        sleep(700);
         motorLL.setPower(1.0);
         motorRR.setPower(1.0);
         servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
         servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
-        sleep(500);
-        motorRR.setTargetPosition(SLIDE_BOTTOM);
-        motorLL.setTargetPosition(SLIDE_BOTTOM);
     }
 }

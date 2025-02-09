@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.myConstants.ARM_UP;
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_ASCENT;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_SAMPLE_GRAB;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
@@ -9,12 +7,11 @@ import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.ejml.dense.block.VectorOps_DDRB;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
@@ -22,13 +19,12 @@ import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(group = "advanced", preselectTeleOp = "EngiNERDs_Control")
-@Disabled
-public class leftAutonomousRoadrunner extends myLinearOpMode {
-
+public class leftAutonomousRoadrunnerPIDF extends myLinearOpMode {
+    SampleMecanumDrive drive;
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive = new SampleMecanumDrive(hardwareMap);
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
         servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
@@ -37,10 +33,6 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
         motorFARM.setTargetPosition(myConstants.ARM_UP);
         motorFARM.setPower(0.4);
         servoWrist.setPosition(servoPositions.WRIST_B);
-        motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLL.setPower(1.0);
-        motorRR.setPower(1.0);
         final Vector2d basketPosition = new Vector2d(-0.5, 35.25);
         final Vector2d sample1PickupPosition = new Vector2d(57.75, 2.25);
         final Vector2d sample2PickupPosition = new Vector2d(57.75, 16.875);
@@ -64,8 +56,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })*/
                 .addTemporalMarker(1.0, () -> {
-                    motorLL.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
+                    lift.setTarget(SLIDE_AUTO_SAMPLE_GRAB);
                     servoWrist.setPosition(servoPositions.WRIST_B);
                 })
                 .setTangent(Math.toRadians(270))
@@ -86,8 +77,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 .addTemporalMarker(()->{
                     motorFARM.setTargetPosition(myConstants.ARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    motorLL.setTargetPosition(SLIDE_TOP);
-                    motorRR.setTargetPosition(SLIDE_TOP);
+                    lift.setTarget(SLIDE_TOP);
                 })
                 .waitSeconds(0.4)
                 .setTangent(Math.toRadians(180))
@@ -103,8 +93,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })*/
                 .addTemporalMarker(1.0, () -> {
-                    motorLL.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
+                    lift.setTarget(SLIDE_AUTO_SAMPLE_GRAB);
                     servoWrist.setPosition(servoPositions.WRIST_B);
                 })
                 .setTangent(Math.toRadians(270))
@@ -125,8 +114,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 .addTemporalMarker(()->{
                     motorFARM.setTargetPosition(myConstants.ARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    motorLL.setTargetPosition(SLIDE_TOP);
-                    motorRR.setTargetPosition(SLIDE_TOP);
+                    lift.setTarget(SLIDE_TOP);
                 })
                 .waitSeconds(0.4)
                 .setTangent(Math.toRadians(180))
@@ -142,8 +130,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })*/
                 .addTemporalMarker(1.0, () -> {
-                    motorLL.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
+                    lift.setTarget(SLIDE_AUTO_SAMPLE_GRAB);
                     servoWrist.setPosition(servoPositions.WRIST_B);
                 })
                 .setTangent(Math.toRadians(270))
@@ -164,8 +151,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 .addTemporalMarker(()->{
                     motorFARM.setTargetPosition(myConstants.ARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    motorLL.setTargetPosition(SLIDE_TOP);
-                    motorRR.setTargetPosition(SLIDE_TOP);
+                    lift.setTarget(SLIDE_TOP);
                 })
                 .waitSeconds(0.4)
                 .setTangent(Math.toRadians(180))
@@ -184,8 +170,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
                 )
                 .addDisplacementMarker(() -> {
-                    motorLL.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
-                    motorRR.setTargetPosition(SLIDE_AUTO_SAMPLE_GRAB);
+                    lift.setTarget(SLIDE_AUTO_SAMPLE_GRAB);
                 })
                 .lineToConstantHeading(
                         new Vector2d(35, -20),
@@ -201,10 +186,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
                 })*/
                 .addTemporalMarker(0.5, () -> {
-                    motorLL.setTargetPosition(SLIDE_BOTTOM);
-                    motorRR.setTargetPosition(SLIDE_BOTTOM);
-                    //motorLL.setTargetPosition(SLIDE_AUTO_ASCENT);
-                    //motorRR.setTargetPosition(SLIDE_AUTO_ASCENT);
+                    lift.setTarget(SLIDE_BOTTOM);
                     //servoWrist.setPosition(servoPositions.WRIST_B);
                 })
                 .setReversed(true)
@@ -226,25 +208,55 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
 
         if (isStopRequested()) return;
         ElapsedTime timer = new ElapsedTime();
+        motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setTarget(SLIDE_TOP);
+        updateEverything(700);
 
-        motorLL.setTargetPosition(SLIDE_TOP);
-        motorRR.setTargetPosition(SLIDE_TOP);
-        motorLL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorRR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        sleep(700);
-        drive.followTrajectorySequence(trajectoryPlayPreload);
-        drive.followTrajectorySequence(trajectoryPlaySample1);
-        drive.followTrajectorySequence(trajectoryPlaySample2);
-        drive.followTrajectorySequence(trajectoryPlaySample3);
-        //drive.followTrajectorySequence(trajectory2);
+
+        drive.followTrajectorySequenceAsync(trajectoryPlayPreload);
+        updateEverything();
+        drive.followTrajectorySequenceAsync(trajectoryPlaySample1);
+        updateEverything();
+        drive.followTrajectorySequenceAsync(trajectoryPlaySample2);
+        updateEverything();
+        drive.followTrajectorySequenceAsync(trajectoryPlaySample3);
+        updateEverything();
+
+        //drive.followTrajectorySequence(trajectoryPlayPreload);
+        //drive.followTrajectorySequence(trajectoryPlaySample1);
+        //drive.followTrajectorySequence(trajectoryPlaySample2);
+        //drive.followTrajectorySequence(trajectoryPlaySample3);
+
         telemetry.addData("Time1", timer.seconds());
         telemetry.update();
-        drive.followTrajectorySequence(trajectory2b);
+        drive.followTrajectorySequenceAsync(trajectory2b);
+        updateEverything();
         //DONE
         telemetry.addData("Time", timer.seconds());
         telemetry.update();
         sleep(5000);
         //motorFARM.setTargetPosition(servoPositions.ARM_UP);
-        //drive.followTrajectorySequence(trajectory3);
+    }
+    void updateEverything(){
+        while (opModeIsActive() && drive.isBusy()) {
+            drive.update();
+            lift.update();
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            // Continually write pose to `PoseStorage`
+            PoseStorage.currentPose = poseEstimate;
+            telemetry.update();
+        }
+    }
+    void updateEverything(double milliseconds){
+        ElapsedTime timer = new ElapsedTime();
+        timer.reset();
+        while (opModeIsActive() && timer.milliseconds() < milliseconds) {
+            drive.update();
+            lift.update();
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            // Continually write pose to `PoseStorage`
+            PoseStorage.currentPose = poseEstimate;
+            telemetry.update();
+        }
     }
 }
