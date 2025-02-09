@@ -136,7 +136,7 @@ public class rightAutonomousSpeceminPID extends myLinearOpMode {
                 .addTemporalMarker(()->{
                     lift.setTarget(SLIDE_HIGH_CHAMBER);
                 })
-                .splineToLinearHeading(new Pose2d(49.5-25, -3, 0), 0)
+                .splineToLinearHeading(new Pose2d(49.5-.25, -3, 0), 0)
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPreload = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
