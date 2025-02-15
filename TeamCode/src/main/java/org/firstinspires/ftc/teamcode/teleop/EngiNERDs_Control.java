@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import static org.firstinspires.ftc.teamcode.myConstants.ARM_DOWN;
 import static org.firstinspires.ftc.teamcode.myConstants.ARM_UP;
+import static org.firstinspires.ftc.teamcode.myConstants.BARN_RADIANS_PER_TICK;
+import static org.firstinspires.ftc.teamcode.myConstants.FARM_RADIANS_PER_TICK;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
@@ -18,6 +20,7 @@ import org.firstinspires.ftc.teamcode.toggleServo;
 public class EngiNERDs_Control extends myLinearOpMode {
     public static boolean useFieldCentric;
     public static boolean hangMode;
+    public static boolean useArmFeedForward;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -67,6 +70,7 @@ public class EngiNERDs_Control extends myLinearOpMode {
         waitForStart();
         useFieldCentric = false;
         hangMode = false;
+        useArmFeedForward = true;
 
         //Run
         while(opModeIsActive()) {
@@ -114,11 +118,18 @@ public class EngiNERDs_Control extends myLinearOpMode {
             motorBR.setPower(motorBRPower);
 
             if (gamepad2.left_stick_y != 0){
-                motorFARM.setPower(gamepad2.left_stick_y * 0.3);
+                motorFARM.setPower(
+                        gamepad2.left_stick_y * 0.3 +
+                        (useArmFeedForward ? 0.15*Math.cos(motorFARM.getCurrentPosition() * FARM_RADIANS_PER_TICK) : 0)
+                );
                 motorFARM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }else if(motorFARM.getMode() == DcMotor.RunMode.RUN_WITHOUT_ENCODER){
                 motorFARM.setPower(0);
             }
+            motorBARN.setPower(
+                    -gamepad2.left_stick_x * 0.6 +
+                    (useArmFeedForward ? 0.15*Math.cos(motorBARN.getCurrentPosition() * BARN_RADIANS_PER_TICK) : 0)
+            );
             //
             if(!hangMode) {
                 if ((-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) ||
@@ -139,7 +150,7 @@ public class EngiNERDs_Control extends myLinearOpMode {
             clawLeft2Toggle.update(gamepad2.y);
             clawRight2Toggle.update(gamepad2.y);
             //armToggle.update(gamepad2.b);
-            if(gamepad2.b){
+            if(gamepad2.b) {
                 motorFARM.setTargetPosition(ARM_UP);
                 motorFARM.setPower(0.3);
                 motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -150,6 +161,8 @@ public class EngiNERDs_Control extends myLinearOpMode {
             telemetry.addData("Lifty", motorLL.getCurrentPosition());
             telemetry.addData("Risey", motorRR.getCurrentPosition());
             telemetry.addData("FARM", motorFARM.getCurrentPosition());
+            telemetry.addData("BARN", motorBARN.getCurrentPosition());
+            telemetry.addData("BARN/1425.1", motorBARN.getCurrentPosition()/1425.1);
             telemetry.addData("Field Centric", useFieldCentric);
             telemetry.update();
         }

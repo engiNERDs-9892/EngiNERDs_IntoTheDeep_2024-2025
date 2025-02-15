@@ -16,6 +16,7 @@ public class myLinearOpMode extends LinearOpMode {
     protected static DcMotor motorLL;//Lifty lift
     protected static DcMotor motorRR;//Risey Rise
     protected static DcMotor motorFARM;
+    protected static DcMotor motorBARN;
     protected static Servo servoClawLeft;
     protected static Servo servoClawRight;
     protected static Servo servoClawLeft2;
@@ -24,7 +25,7 @@ public class myLinearOpMode extends LinearOpMode {
     protected static Servo servoWrist;
     protected static GoBildaPinpointDriver odo;
     protected static IMU imu;
-    protected static Lift lift;
+    protected static PIDFLift lift;
     public static double unitsPerTick = 10;
     protected static double drivePower;
     @Override
@@ -39,6 +40,7 @@ public class myLinearOpMode extends LinearOpMode {
         motorRR = hardwareMap.dcMotor.get("motorRR");
         servoArm = hardwareMap.servo.get("servoArm");
         motorFARM = hardwareMap.dcMotor.get("motorFARM");
+        motorBARN = hardwareMap.dcMotor.get("motorBARN");
         servoClawLeft = hardwareMap.servo.get("servoClawLeft");
         servoClawRight = hardwareMap.servo.get("servoClawRight");
         servoClawLeft2 = hardwareMap.servo.get("servo2Left");
@@ -52,6 +54,7 @@ public class myLinearOpMode extends LinearOpMode {
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorFARM.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBARN.setDirection(DcMotor.Direction.REVERSE);
         motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorLL.setDirection(DcMotor.Direction.REVERSE);
         motorLL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -109,14 +112,9 @@ public class myLinearOpMode extends LinearOpMode {
         motorBL.setPower(power);
         motorBR.setPower(power);
     }
-    public interface Lift{
-        public void setTarget(double target);
-        public void update();
-        boolean isActive();
-        void setActive(boolean active);
-    }
-    public class PIDFLift implements Lift{
-        public double P = 0.021, I = 0, D = 0.0004;
+
+    public class PIDFLift{
+        public double P = 0.005, I = 0, D = 0.0004;
         PIDController controller;
         private boolean useTelemetry;
 
@@ -176,49 +174,5 @@ public class myLinearOpMode extends LinearOpMode {
             }
         }
     }
-    public class RUN_TO_POSITIONLift implements Lift{
-        private boolean useTelemetry;
-        private boolean isActive;
-        public void setTarget(double target) {
-            motorLL.setTargetPosition((int) target);
-            motorRR.setTargetPosition((int) target);
-        }
-        public RUN_TO_POSITIONLift(HardwareMap hardwareMap) {
-            // Start the Slides down during the initialization phase
-            motorLL.setTargetPosition(0);
-            motorRR.setTargetPosition(0);
-            motorLL.setPower(0);
-            motorRR.setPower(0);
-            motorLL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorLL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            useTelemetry = true;
-            isActive = false;
-        }
 
-        public void update() {
-            int LinearSlide_Pos1 = motorRR.getCurrentPosition();
-            int LinearSlide_Pos2 = motorLL.getCurrentPosition();
-            if(useTelemetry){
-                // Telemetry making sure that everything is running as it should
-                telemetry.addData("RR Pos", LinearSlide_Pos1);
-                telemetry.addData("LL Pos", LinearSlide_Pos2);
-                telemetry.addData("Target Pos", motorLL.getTargetPosition());
-            }
-        }
-
-        public boolean isActive() {
-            return isActive;
-        }
-
-        public void setActive(boolean active) {
-            this.isActive = active;
-            if(active){
-                motorLL.setPower(1.0);
-                motorRR.setPower(1.0);
-            }else{
-                motorLL.setPower(0.0);
-                motorRR.setPower(0.0);
-            }
-        }
-    }
 }

@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @Config
 public class myConstants {
-    public static double slidePositionSave = 0;
     public static DcMotorSimple.Direction motorFL_DIRECTION = DcMotorSimple.Direction.REVERSE;
     public static DcMotorSimple.Direction motorFR_DIRECTION = DcMotorSimple.Direction.FORWARD;
     public static DcMotorSimple.Direction motorLR_DIRECTION = DcMotorSimple.Direction.REVERSE;
@@ -15,6 +14,8 @@ public class myConstants {
             GoBildaPinpointDriver.EncoderDirection.REVERSED;
     public static double X_OFFSET = 139;
     public static double Y_OFFSET = -158;
+    public static double FARM_RADIANS_PER_TICK = 0.004408f;
+    public static double BARN_RADIANS_PER_TICK = 0.004408f; // 2 * pi / 1425.1 // 50.9:1
     public static int SLIDE_BOTTOM = 60;
     public static int SLIDE_AUTO_SAMPLE_GRAB = 100;
     public static int SLIDE_AUTO_SPECEMIN_GRAB = 1185;
@@ -42,8 +43,8 @@ public class myConstants {
         public static final double BUCKET_IN = .6;
         public static final double CLAW_LEFT_OPEN = 0.85;
         public static final double CLAW_RIGHT_OPEN = 0.15;
-        public static final double CLAW_LEFT_CLOSED = 0.47;
-        public static final double CLAW_RIGHT_CLOSED = 0.535;
+        public static final double CLAW_LEFT_CLOSED = 0.43; //.47
+        public static final double CLAW_RIGHT_CLOSED = 0.575; //.535
 
         public static final double CLAW_LEFT_2_OPEN = 0.75;
         public static final double CLAW_RIGHT_2_OPEN = 0.3;

@@ -70,7 +70,7 @@ public class rightAutonomousSpeceminPID extends myLinearOpMode {
                 })
 
                 .setTangent(Math.toRadians(90))
-                .splineTo(new Vector2d(1.6, -38), Math.toRadians(180))
+                .splineTo(new Vector2d(1.0, -38), Math.toRadians(180))
                 .addTemporalMarker(()->{
                     servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
                     servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
@@ -80,7 +80,7 @@ public class rightAutonomousSpeceminPID extends myLinearOpMode {
                 .addTemporalMarker(()->{
                     lift.setTarget(SLIDE_HIGH_CHAMBER);
                 })
-                .splineToLinearHeading(new Pose2d(48.5-0.5, 3, Math.toRadians(0)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(48.5, 3, Math.toRadians(0)), Math.toRadians(0))
                 .build();
         TrajectorySequence trajectoryPushPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 .setReversed(true)
@@ -125,7 +125,7 @@ public class rightAutonomousSpeceminPID extends myLinearOpMode {
                 })
                 //Go to grab
                 .setReversed(true)
-                .splineToSplineHeading(new Pose2d(0.6, -36, Math.toRadians(180)), Math.toRadians(180))
+                .splineToSplineHeading(new Pose2d(0.1, -36, Math.toRadians(180)), Math.toRadians(180))
                 //Grab
                 .addTemporalMarker(()->{
                     servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
@@ -171,7 +171,7 @@ public class rightAutonomousSpeceminPID extends myLinearOpMode {
         updateEverything();
         drive.followTrajectorySequenceAsync(trajectoryPlayAfterPush);
         updateEverything();
-        hangSpecemin(-50);
+        hangSpecemin(-55);
         drive.followTrajectorySequenceAsync(trajectoryPlay2AfterPush);
         updateEverything();
         hangSpecemin();

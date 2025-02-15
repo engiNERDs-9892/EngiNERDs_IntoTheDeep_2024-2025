@@ -38,7 +38,7 @@ public class PIDFCodeWithoutAuto extends myLinearOpMode {
 
         // Initialize our lift function (Initialize our linear slides)
 
-        Lift lift = new PIDFLift(hardwareMap);
+        PIDFLift lift = new PIDFLift(hardwareMap);
 
         // Set inital pose
         drive.setPoseEstimate(new Pose2d());

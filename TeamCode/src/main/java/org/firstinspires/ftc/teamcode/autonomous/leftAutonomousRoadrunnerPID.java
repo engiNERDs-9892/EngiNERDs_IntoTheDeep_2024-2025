@@ -30,6 +30,7 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
         servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
         servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFARM.setTargetPosition(myConstants.ARM_UP);
         motorFARM.setPower(0.4);
         servoWrist.setPosition(servoPositions.WRIST_B);
@@ -151,7 +152,7 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
                 .addTemporalMarker(()->{
                     motorFARM.setTargetPosition(myConstants.ARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    lift.setTarget(SLIDE_TOP);
+                    lift.setTarget(SLIDE_TOP +50);
                 })
                 .waitSeconds(0.4)
                 .setTangent(Math.toRadians(180))
