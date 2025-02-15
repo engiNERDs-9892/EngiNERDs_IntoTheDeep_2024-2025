@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -29,6 +30,7 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
         servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
         servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
+
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFARM.setTargetPosition(myConstants.ARM_UP);
@@ -208,6 +210,7 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
+        motorBARN.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ElapsedTime timer = new ElapsedTime();
         motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setTarget(SLIDE_TOP);
@@ -242,6 +245,8 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
         while (opModeIsActive() && drive.isBusy()) {
             drive.update();
             lift.update();
+            //pidFARM.update();
+            pidBARN.update();
             Pose2d poseEstimate = drive.getPoseEstimate();
             // Continually write pose to `PoseStorage`
             PoseStorage.currentPose = poseEstimate;
@@ -254,6 +259,8 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
         while (opModeIsActive() && timer.milliseconds() < milliseconds) {
             drive.update();
             lift.update();
+            //pidFARM.update();
+            pidBARN.update();
             Pose2d poseEstimate = drive.getPoseEstimate();
             // Continually write pose to `PoseStorage`
             PoseStorage.currentPose = poseEstimate;

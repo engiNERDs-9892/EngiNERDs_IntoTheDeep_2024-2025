@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -21,11 +20,12 @@ public class myLinearOpMode extends LinearOpMode {
     protected static Servo servoClawRight;
     protected static Servo servoClawLeft2;
     protected static Servo servoClawRight2;
-    protected static Servo servoArm;
     protected static Servo servoWrist;
     protected static GoBildaPinpointDriver odo;
     protected static IMU imu;
     protected static PIDFLift lift;
+    protected static PIDMotor pidFARM;
+    protected static PIDMotor pidBARN;
     public static double unitsPerTick = 10;
     protected static double drivePower;
     @Override
@@ -38,7 +38,6 @@ public class myLinearOpMode extends LinearOpMode {
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorLL = hardwareMap.dcMotor.get("motorLL");
         motorRR = hardwareMap.dcMotor.get("motorRR");
-        servoArm = hardwareMap.servo.get("servoArm");
         motorFARM = hardwareMap.dcMotor.get("motorFARM");
         motorBARN = hardwareMap.dcMotor.get("motorBARN");
         servoClawLeft = hardwareMap.servo.get("servoClawLeft");
@@ -67,16 +66,20 @@ public class myLinearOpMode extends LinearOpMode {
         setDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //Initialize servos
-        servoArm.setDirection(Servo.Direction.FORWARD);
         servoClawLeft.setDirection(Servo.Direction.FORWARD);
-        servoClawRight.setDirection(Servo.Direction.FORWARD);
+        servoClawRight.setDirection(Servo.Direction.REVERSE);
+        servoClawLeft2.setDirection(Servo.Direction.REVERSE);
+        servoClawRight2.setDirection(Servo.Direction.FORWARD);
         //Initialize pinpoint
         //TODO change offsets
         odo.setOffsets(myConstants.X_OFFSET, myConstants.Y_OFFSET);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(myConstants.xEncoder_DIRECTION, myConstants.yEncoder_DIRECTION);
-
-        lift = new PIDFLift(hardwareMap);
+        //
+        lift = new PIDFLift();
+        //lift = new PIDMotor(new DcMotor[]{motorLL, motorRR});
+        pidBARN = new PIDMotor(new DcMotor[]{motorBARN});
+        pidFARM = new PIDMotor(new DcMotor[]{motorFARM});
         //odo.resetPosAndIMU();
         /*
         //Initialize IMU
@@ -131,7 +134,7 @@ public class myLinearOpMode extends LinearOpMode {
             this.target = target;
         }
         private double target;
-        public PIDFLift(HardwareMap hardwareMap) {
+        public PIDFLift() {
             // Beep boop this is the the constructor for the lift
             // Assume this sets up the lift hardware
 
@@ -168,6 +171,79 @@ public class myLinearOpMode extends LinearOpMode {
                     // Telemetry making sure that everything is running as it should
                     telemetry.addData("RR Pos", LinearSlide_Pos1);
                     telemetry.addData("LL Pos", LinearSlide_Pos2);
+                    telemetry.addData("pid", pid);
+                    telemetry.addData("Target Pos", target);
+                }
+            }
+        }
+    }
+
+    public class PIDMotor extends PIDController{
+        public static final double P = 0.005, I = 0, D = 0.0004;//Default values
+        //PIDController controller;
+        private boolean useTelemetry;
+        private boolean isActive;
+        private DcMotor[] motors;
+
+
+        private double target;
+        public boolean isActive() {
+            return isActive;
+        }
+
+        public void setActive(boolean active) {
+            isActive = active;
+        }
+        public void setTarget(double target) {//setSetPoint
+            this.target = target;
+        }
+        public double getTarget() {//setSetPoint
+            return target;
+        }
+        public PIDMotor(DcMotor[] motors) {
+            super(P, I, D);
+            //controller = new PIDController(P, I, D);
+            this.motors = motors;
+            target = 0;
+            useTelemetry = true;
+            isActive = true;
+        }
+        public PIDMotor(DcMotor motor) {
+            super(P, I, D);
+            //controller = new PIDController(P, I, D);
+            this.motors = new DcMotor[]{motor};
+            target = 0;
+            useTelemetry = true;
+            isActive = true;
+        }
+        public PIDMotor(DcMotor[] motors, double P, double I, double D) {
+            super(P, I, D);
+            //controller = new PIDController(P, I, D);
+            this.motors = motors;
+            target = 0;
+            useTelemetry = true;
+            isActive = true;
+        }
+        public PIDMotor(DcMotor motor, double P, double I, double D) {
+            super(P, I, D);
+            //controller = new PIDController(P, I, D);
+            this.motors = new DcMotor[]{motor};
+            target = 0;
+            useTelemetry = true;
+            isActive = true;
+        }
+
+        public void update() {
+            if(isActive){
+                int motorPosition = motors[0].getCurrentPosition();
+                double pid = calculate(motorPosition, target);
+                for (DcMotor motor: motors) {
+                    motor.setPower(pid);
+                }
+
+                if(useTelemetry){
+                    // Telemetry making sure that everything is running as it should
+                    telemetry.addData("Current Pos", motorPosition);
                     telemetry.addData("pid", pid);
                     telemetry.addData("Target Pos", target);
                 }

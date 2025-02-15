@@ -37,7 +37,7 @@ public class rightAutonomousSpeceminPID extends myLinearOpMode {
         motorFARM.setPower(0.6);
         servoWrist.setPosition(servoPositions.WRIST_A);
 
-        ((PIDFLift)lift).P = 0.01;
+        lift.P = 0.01;
         //Trajectories
         TrajectorySequence trajectoryPlayPreload = drive.trajectorySequenceBuilder(new Pose2d())
                 .addTemporalMarker(()->{

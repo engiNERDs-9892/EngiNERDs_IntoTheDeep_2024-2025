@@ -9,6 +9,7 @@ import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.myConstants;
@@ -20,7 +21,6 @@ import org.firstinspires.ftc.teamcode.toggleServo;
 public class EngiNERDs_Control extends myLinearOpMode {
     public static boolean useFieldCentric;
     public static boolean hangMode;
-    public static boolean useArmFeedForward;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,34 +47,24 @@ public class EngiNERDs_Control extends myLinearOpMode {
                 motorRR.setPower(0);
             }
         };
-        toggleButton armToggle = new toggleButton() {
-            @Override
-            public void toggleOn() {
-                motorFARM.setTargetPosition(ARM_UP);
-                motorFARM.setPower(0.3);
-                motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            @Override
-            public void toggleOff() {
-                motorFARM.setTargetPosition(ARM_DOWN);
-                motorFARM.setPower(0.25);
-                motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-        };
         toggleServo clawLeftToggle = new toggleServo(servoClawLeft, myConstants.servoPositions.CLAW_LEFT_OPEN, myConstants.servoPositions.CLAW_LEFT_CLOSED);
         toggleServo clawRightToggle = new toggleServo(servoClawRight, myConstants.servoPositions.CLAW_RIGHT_OPEN, myConstants.servoPositions.CLAW_RIGHT_CLOSED);
         toggleServo clawLeft2Toggle = new toggleServo(servoClawLeft2, myConstants.servoPositions.CLAW_LEFT_2_OPEN, myConstants.servoPositions.CLAW_LEFT_2_CLOSED);
         toggleServo clawRight2Toggle = new toggleServo(servoClawRight2, myConstants.servoPositions.CLAW_RIGHT_2_OPEN, myConstants.servoPositions.CLAW_RIGHT_2_CLOSED);
         toggleServo wristToggle = new toggleServo(servoWrist, myConstants.servoPositions.WRIST_A, myConstants.servoPositions.WRIST_B);
+        ElapsedTime loopTimer = new ElapsedTime();
+        double loopTime;
         waitForStart();
+        loopTimer.reset();
         useFieldCentric = false;
         hangMode = false;
-        useArmFeedForward = true;
 
         //Run
         while(opModeIsActive()) {
             odo.update(GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING);
+            loopTime = loopTimer.milliseconds();
+            loopTimer.reset();
+
             //Wheels
             //Get gamepad input
             double x = gamepad1.left_stick_x;
@@ -117,19 +107,10 @@ public class EngiNERDs_Control extends myLinearOpMode {
             motorBL.setPower(motorBLPower);
             motorBR.setPower(motorBRPower);
 
-            if (gamepad2.left_stick_y != 0){
-                motorFARM.setPower(
-                        gamepad2.left_stick_y * 0.3 +
-                        (useArmFeedForward ? 0.15*Math.cos(motorFARM.getCurrentPosition() * FARM_RADIANS_PER_TICK) : 0)
-                );
-                motorFARM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }else if(motorFARM.getMode() == DcMotor.RunMode.RUN_WITHOUT_ENCODER){
-                motorFARM.setPower(0);
-            }
-            motorBARN.setPower(
-                    -gamepad2.left_stick_x * 0.6 +
-                    (useArmFeedForward ? 0.15*Math.cos(motorBARN.getCurrentPosition() * BARN_RADIANS_PER_TICK) : 0)
-            );
+            pidBARN.setTarget(pidBARN.getTarget() - 0.5*gamepad2.left_stick_x*loopTime);
+            pidFARM.setTarget(pidFARM.getTarget() + 0.5*gamepad2.left_stick_y*loopTime);
+            pidBARN.update();
+            pidFARM.update();
             //
             if(!hangMode) {
                 if ((-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) ||
@@ -149,12 +130,6 @@ public class EngiNERDs_Control extends myLinearOpMode {
             clawRightToggle.update(gamepad2.a);
             clawLeft2Toggle.update(gamepad2.y);
             clawRight2Toggle.update(gamepad2.y);
-            //armToggle.update(gamepad2.b);
-            if(gamepad2.b) {
-                motorFARM.setTargetPosition(ARM_UP);
-                motorFARM.setPower(0.3);
-                motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
 
             wristToggle.update(gamepad2.x);
             //

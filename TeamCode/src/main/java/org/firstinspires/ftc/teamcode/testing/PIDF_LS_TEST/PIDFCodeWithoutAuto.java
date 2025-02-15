@@ -1,15 +1,9 @@
 package org.firstinspires.ftc.teamcode.testing.PIDF_LS_TEST;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -38,7 +32,7 @@ public class PIDFCodeWithoutAuto extends myLinearOpMode {
 
         // Initialize our lift function (Initialize our linear slides)
 
-        PIDFLift lift = new PIDFLift(hardwareMap);
+        PIDFLift lift = new PIDFLift();
 
         // Set inital pose
         drive.setPoseEstimate(new Pose2d());
