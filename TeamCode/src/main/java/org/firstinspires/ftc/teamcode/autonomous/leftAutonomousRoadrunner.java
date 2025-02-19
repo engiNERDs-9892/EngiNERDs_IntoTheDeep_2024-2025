@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.myConstants.ARM_UP;
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_ASCENT;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_SAMPLE_GRAB;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
@@ -13,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.ejml.dense.block.VectorOps_DDRB;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants;
@@ -34,7 +31,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
         servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
         servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFARM.setTargetPosition(myConstants.ARM_UP);
+        motorFARM.setTargetPosition(myConstants.FARM_UP);
         motorFARM.setPower(0.4);
         servoWrist.setPosition(servoPositions.WRIST_B);
         motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -49,7 +46,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
 
         TrajectorySequence trajectoryPlayPreload = drive.trajectorySequenceBuilder(new Pose2d())
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 })
                 .splineTo(basketPosition, Math.toRadians(90))
@@ -72,7 +69,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 .splineToConstantHeading(sample1PickupPosition, 0)
 
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
+                    motorFARM.setTargetPosition(myConstants.FARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -84,7 +81,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 })
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorLL.setTargetPosition(SLIDE_TOP);
                     motorRR.setTargetPosition(SLIDE_TOP);
@@ -111,7 +108,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 .splineToConstantHeading(sample2PickupPosition, 0)
 
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
+                    motorFARM.setTargetPosition(myConstants.FARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -123,7 +120,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 })
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorLL.setTargetPosition(SLIDE_TOP);
                     motorRR.setTargetPosition(SLIDE_TOP);
@@ -150,7 +147,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 .splineToConstantHeading(sample3PickupPosition, 0)
 
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
+                    motorFARM.setTargetPosition(myConstants.FARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -162,7 +159,7 @@ public class leftAutonomousRoadrunner extends myLinearOpMode {
                 })
                 .waitSeconds(0.4)
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorLL.setTargetPosition(SLIDE_TOP);
                     motorRR.setTargetPosition(SLIDE_TOP);

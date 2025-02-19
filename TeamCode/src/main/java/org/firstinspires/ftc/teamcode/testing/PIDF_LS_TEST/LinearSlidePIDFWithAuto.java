@@ -40,7 +40,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFARM.setTargetPosition(myConstants.ARM_UP);
+        motorFARM.setTargetPosition(myConstants.FARM_UP);
         motorFARM.setPower(0.4);
         servoWrist.setPosition(servoPositions.WRIST_B);
 
@@ -48,7 +48,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
         TrajectorySequence DropPreLoad = drive.trajectorySequenceBuilder(new Pose2d())
                 // Has the Arm started in the up position
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 })
 
@@ -87,7 +87,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
 
                 // Lower the arm to grab the 1st Sample
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
+                    motorFARM.setTargetPosition(myConstants.FARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -103,7 +103,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
                 // Raises the Arm to the Top Basket
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     SlidesUp();
                 })
@@ -147,7 +147,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
 
                 // Lowers the arm to grab the 2nd sample
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
+                    motorFARM.setTargetPosition(myConstants.FARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -163,7 +163,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
                 // Raises the LS and Claws in order to play in the top basket
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     SlidesUp();
                 })
@@ -206,7 +206,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
 
                 // Lowers the arm to pick up the 3rd Sample
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_AUTO_SAMPLE_GRAB);
+                    motorFARM.setTargetPosition(myConstants.FARM_AUTO_SAMPLE_GRAB);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
                     servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
@@ -222,7 +222,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
                 // Prepares the arm to drop the sample in the top basket
                 .waitSeconds(0.5)
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     SlidesUp();
                 })

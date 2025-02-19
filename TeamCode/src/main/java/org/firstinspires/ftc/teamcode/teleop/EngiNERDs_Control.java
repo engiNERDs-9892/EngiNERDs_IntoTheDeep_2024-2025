@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import static org.firstinspires.ftc.teamcode.myConstants.ARM_DOWN;
-import static org.firstinspires.ftc.teamcode.myConstants.ARM_UP;
-import static org.firstinspires.ftc.teamcode.myConstants.BARN_RADIANS_PER_TICK;
-import static org.firstinspires.ftc.teamcode.myConstants.FARM_RADIANS_PER_TICK;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
@@ -12,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.drive.PoseStorage;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.toggleButton;
@@ -54,6 +51,13 @@ public class EngiNERDs_Control extends myLinearOpMode {
         toggleServo wristToggle = new toggleServo(servoWrist, myConstants.servoPositions.WRIST_A, myConstants.servoPositions.WRIST_B);
         ElapsedTime loopTimer = new ElapsedTime();
         double loopTime;
+        if(!PoseStorage.hasRunOpmode){
+            PoseStorage.hasRunOpmode = true;
+            motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorBARN.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorFARM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
         waitForStart();
         loopTimer.reset();
         useFieldCentric = false;

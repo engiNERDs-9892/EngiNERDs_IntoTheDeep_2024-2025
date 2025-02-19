@@ -1,24 +1,16 @@
 package org.firstinspires.ftc.teamcode.testing;
 
-import static org.firstinspires.ftc.teamcode.myConstants.ARM_UP;
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_SPECEMIN_GRAB;
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_HIGH_CHAMBER;
-import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_HIGH_CHAMBER_PLAY;
+import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
-import org.firstinspires.ftc.teamcode.teleop.EngiNERDs_Control;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(group = "testing", preselectTeleOp = "EngiNERDs_Control")
@@ -33,7 +25,7 @@ public class distanceTester extends myLinearOpMode {
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFARM.setTargetPosition(myConstants.ARM_UP);
+        motorFARM.setTargetPosition(myConstants.FARM_UP);
         motorFARM.setPower(0.6);
         servoWrist.setPosition(servoPositions.WRIST_A);
         motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -48,7 +40,7 @@ public class distanceTester extends myLinearOpMode {
                 .build();
         waitForStart();//waitForStart();
         if (isStopRequested()) return;
-        motorFARM.setTargetPosition(ARM_UP);
+        motorFARM.setTargetPosition(FARM_UP);
         motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         drive.followTrajectorySequence(trajectoryTest);
     }

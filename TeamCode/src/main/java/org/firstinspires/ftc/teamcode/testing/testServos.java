@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.repeatButton;
 
 public class testServos extends LinearOpMode {
     public static Servo[] servoList = new Servo[12];
-    public static String[] servoNames = {"servoClawRight", "servoClawLeft", "servo2Right", "servo2Left", "servoArm", "servoWrist"};
-    //public static String[] servoNames = {"servo0", "servo1", "servo2", "servo3", "servo4", "servo5"};
+    ///public static String[] servoNames = {"servoClawRight", "servoClawLeft", "servo2Right", "servo2Left", "servoArm", "servoWrist"};
+    public static String[] servoNames = {"servo0", "servo1", "servo2", "servo3", "servo4", "servo5"};
     public static int currentServo;
     public static double increment;
 

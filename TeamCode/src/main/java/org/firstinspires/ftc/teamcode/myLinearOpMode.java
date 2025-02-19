@@ -24,6 +24,7 @@ public class myLinearOpMode extends LinearOpMode {
     protected static GoBildaPinpointDriver odo;
     protected static IMU imu;
     protected static PIDFLift lift;
+    protected static PIDMotor lift2;
     protected static PIDMotor pidFARM;
     protected static PIDMotor pidBARN;
     public static double unitsPerTick = 10;
@@ -77,7 +78,7 @@ public class myLinearOpMode extends LinearOpMode {
         odo.setEncoderDirections(myConstants.xEncoder_DIRECTION, myConstants.yEncoder_DIRECTION);
         //
         lift = new PIDFLift();
-        //lift = new PIDMotor(new DcMotor[]{motorLL, motorRR});
+        lift2 = new PIDMotor(new DcMotor[]{motorLL, motorRR});
         pidBARN = new PIDMotor(new DcMotor[]{motorBARN});
         pidFARM = new PIDMotor(new DcMotor[]{motorFARM});
         //odo.resetPosAndIMU();
@@ -191,46 +192,50 @@ public class myLinearOpMode extends LinearOpMode {
             return isActive;
         }
 
+        @Override
+        public void setSetPoint(double sp) {
+            super.setSetPoint(sp);
+            this.target = sp;
+        }
+
         public void setActive(boolean active) {
             isActive = active;
         }
+        @Deprecated
         public void setTarget(double target) {//setSetPoint
             this.target = target;
         }
+        @Deprecated
         public double getTarget() {//setSetPoint
             return target;
         }
         public PIDMotor(DcMotor[] motors) {
             super(P, I, D);
-            //controller = new PIDController(P, I, D);
             this.motors = motors;
             target = 0;
-            useTelemetry = true;
-            isActive = true;
+            useTelemetry = false;
+            isActive = false;
         }
         public PIDMotor(DcMotor motor) {
             super(P, I, D);
-            //controller = new PIDController(P, I, D);
             this.motors = new DcMotor[]{motor};
             target = 0;
-            useTelemetry = true;
-            isActive = true;
+            useTelemetry = false;
+            isActive = false;
         }
         public PIDMotor(DcMotor[] motors, double P, double I, double D) {
             super(P, I, D);
-            //controller = new PIDController(P, I, D);
             this.motors = motors;
             target = 0;
-            useTelemetry = true;
-            isActive = true;
+            useTelemetry = false;
+            isActive = false;
         }
         public PIDMotor(DcMotor motor, double P, double I, double D) {
             super(P, I, D);
-            //controller = new PIDController(P, I, D);
             this.motors = new DcMotor[]{motor};
             target = 0;
-            useTelemetry = true;
-            isActive = true;
+            useTelemetry = false;
+            isActive = false;
         }
 
         public void update() {

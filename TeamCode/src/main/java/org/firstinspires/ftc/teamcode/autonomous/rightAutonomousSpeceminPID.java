@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.myConstants.ARM_UP;
+import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_SPECEMIN_GRAB;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_HIGH_CHAMBER;
@@ -9,6 +9,7 @@ import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_HIGH_CHAMBER_PLAY
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-
+@Disabled
 @Autonomous(group = "advanced", preselectTeleOp = "EngiNERDs_Control")
 public class rightAutonomousSpeceminPID extends myLinearOpMode {
     SampleMecanumDrive drive;
@@ -33,7 +34,9 @@ public class rightAutonomousSpeceminPID extends myLinearOpMode {
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFARM.setTargetPosition(myConstants.ARM_UP);
+        motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        PoseStorage.hasRunOpmode = true;
+        motorFARM.setTargetPosition(myConstants.FARM_UP);
         motorFARM.setPower(0.6);
         servoWrist.setPosition(servoPositions.WRIST_A);
 
@@ -41,7 +44,7 @@ public class rightAutonomousSpeceminPID extends myLinearOpMode {
         //Trajectories
         TrajectorySequence trajectoryPlayPreload = drive.trajectorySequenceBuilder(new Pose2d())
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 })
                 .splineToConstantHeading(new Vector2d(47.75, 6), 0)//Adjust x offset
@@ -158,7 +161,7 @@ public class rightAutonomousSpeceminPID extends myLinearOpMode {
         if (isStopRequested()) return;
         ElapsedTime timer = new ElapsedTime();
 
-        motorFARM.setTargetPosition(ARM_UP);
+        motorFARM.setTargetPosition(FARM_UP);
         motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setActive(true);
         lift.setTarget(SLIDE_HIGH_CHAMBER);

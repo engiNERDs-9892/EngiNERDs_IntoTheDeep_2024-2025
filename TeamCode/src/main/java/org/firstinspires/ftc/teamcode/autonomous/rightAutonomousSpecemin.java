@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static org.firstinspires.ftc.teamcode.myConstants.ARM_UP;
+import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_SPECEMIN_GRAB;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_HIGH_CHAMBER;
@@ -8,7 +8,6 @@ import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_HIGH_CHAMBER_PLAY
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -33,7 +32,7 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFARM.setTargetPosition(myConstants.ARM_UP);
+        motorFARM.setTargetPosition(myConstants.FARM_UP);
         motorFARM.setPower(0.6);
         servoWrist.setPosition(servoPositions.WRIST_A);
         motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -43,7 +42,7 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
         //Trajectories
         TrajectorySequence trajectoryPlayPreload = drive.trajectorySequenceBuilder(new Pose2d())
                 .addTemporalMarker(()->{
-                    motorFARM.setTargetPosition(myConstants.ARM_UP);
+                    motorFARM.setTargetPosition(myConstants.FARM_UP);
                     motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 })
                 .splineToConstantHeading(new Vector2d(49, 4
@@ -182,7 +181,7 @@ public class rightAutonomousSpecemin extends myLinearOpMode {
         if (isStopRequested()) return;
         ElapsedTime timer = new ElapsedTime();
 
-        motorFARM.setTargetPosition(ARM_UP);
+        motorFARM.setTargetPosition(FARM_UP);
         motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorLL.setTargetPosition(SLIDE_HIGH_CHAMBER);
         motorRR.setTargetPosition(SLIDE_HIGH_CHAMBER);
