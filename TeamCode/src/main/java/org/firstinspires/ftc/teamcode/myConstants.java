@@ -21,7 +21,7 @@ public class myConstants {
     public static int SLIDE_AUTO_SPECEMIN_GRAB = 1185;
     public static int SLIDE_AUTO_ASCENT = 1700;
     public static int SLIDE_HIGH_BASKET = 5300;
-    public static int SLIDE_AUTO_FRONT_SPECEMIN = 2000;
+    public static int SLIDE_AUTO_FRONT_SPECEMIN = 2200;
     public static int SLIDE_AUTO_FRONT_SPECEMIN_PLAY = 1000;
     public static int SLIDE_TOP = 5300;
     public static int SLIDE_HIGH_CHAMBER = 3700;
@@ -30,8 +30,9 @@ public class myConstants {
     public static final int FARM_DOWN = 340;
     public static final int FARM_AUTO_SAMPLE_GRAB = 380-10;
     public static int FARM_AUTO_FRONT_SPECEMIN = 60;
-    public static int BARN_DOWN = 0;
-    //public static int BARN_UP;
+    public static int BARN_UP = 0;
+    public static int BARN_HIGH_CHAMBER = 480;
+    public static int BARN_DOWN = 600;
 
 
     /*Circle direction

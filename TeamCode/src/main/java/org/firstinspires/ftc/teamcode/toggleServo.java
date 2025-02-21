@@ -27,4 +27,8 @@ public class toggleServo extends toggleButton{
     public void toggleOff() {
         servo.setPosition(offPosition);
     }
+
+    public void activate() {
+        servo.setPosition(getToggleState() ? onPosition : offPosition);
+    }
 }

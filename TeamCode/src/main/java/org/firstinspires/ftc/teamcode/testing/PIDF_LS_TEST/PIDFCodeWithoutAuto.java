@@ -5,7 +5,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.drive.PoseStorage;
+import org.firstinspires.ftc.teamcode.drive.VariableStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
@@ -71,7 +71,7 @@ public class PIDFCodeWithoutAuto extends myLinearOpMode {
             Pose2d poseEstimate = drive.getPoseEstimate();
 
             // Continually write pose to `PoseStorage`
-            PoseStorage.currentPose = poseEstimate;
+            VariableStorage.currentPose = poseEstimate;
             telemetry.update();
         }
     }

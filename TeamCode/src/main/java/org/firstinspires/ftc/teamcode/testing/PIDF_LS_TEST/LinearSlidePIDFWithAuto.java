@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.arcrobotics.ftclib.controller.PIDController;
 
-import org.firstinspires.ftc.teamcode.drive.PoseStorage;
+import org.firstinspires.ftc.teamcode.drive.VariableStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
@@ -307,7 +307,7 @@ public class LinearSlidePIDFWithAuto extends myLinearOpMode {
             Pose2d poseEstimate = drive.getPoseEstimate();
 
             // Continually write pose to `PoseStorage`
-            PoseStorage.currentPose = poseEstimate;
+            VariableStorage.currentPose = poseEstimate;
         }
     }
     // Sets the target of the LS to go all the way down

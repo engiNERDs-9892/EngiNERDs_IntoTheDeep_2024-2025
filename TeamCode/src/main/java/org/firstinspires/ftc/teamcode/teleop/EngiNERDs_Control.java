@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static org.firstinspires.ftc.teamcode.myConstants.BARN_DOWN;
+import static org.firstinspires.ftc.teamcode.myConstants.BARN_UP;
+import static org.firstinspires.ftc.teamcode.myConstants.FARM_DOWN;
+import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
@@ -8,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
-import org.firstinspires.ftc.teamcode.drive.PoseStorage;
+import org.firstinspires.ftc.teamcode.drive.VariableStorage;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.toggleButton;
@@ -18,6 +22,7 @@ import org.firstinspires.ftc.teamcode.toggleServo;
 public class EngiNERDs_Control extends myLinearOpMode {
     public static boolean useFieldCentric;
     public static boolean hangMode;
+    public static boolean useMotorLimits;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,17 +56,27 @@ public class EngiNERDs_Control extends myLinearOpMode {
         toggleServo wristToggle = new toggleServo(servoWrist, myConstants.servoPositions.WRIST_A, myConstants.servoPositions.WRIST_B);
         ElapsedTime loopTimer = new ElapsedTime();
         double loopTime;
-        if(!PoseStorage.hasRunOpmode){
-            PoseStorage.hasRunOpmode = true;
+        if(!VariableStorage.hasRunOpmode){
+            VariableStorage.hasRunOpmode = true;
             motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorBARN.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorFARM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+
         waitForStart();
+
         loopTimer.reset();
         useFieldCentric = false;
         hangMode = false;
+        useMotorLimits = true;
+        pidFARM.setActive(true);
+        pidBARN.setActive(true);
+        clawLeft2Toggle.activate();
+        clawRight2Toggle.activate();
+        clawLeftToggle.activate();
+        clawRightToggle.activate();
+        wristToggle.activate();
 
         //Run
         while(opModeIsActive()) {
@@ -111,16 +126,28 @@ public class EngiNERDs_Control extends myLinearOpMode {
             motorBL.setPower(motorBLPower);
             motorBR.setPower(motorBRPower);
 
-            pidBARN.setTarget(pidBARN.getTarget() - 0.5*gamepad2.left_stick_x*loopTime);
-            pidFARM.setTarget(pidFARM.getTarget() + 0.5*gamepad2.left_stick_y*loopTime);
+            double barnTarget = pidBARN.getSetPoint();
+            double farmTarget = pidFARM.getSetPoint();
+            if(FARM_UP < farmTarget && farmTarget < FARM_DOWN || !useMotorLimits){
+                pidFARM.setTarget(farmTarget + 0.5*loopTime*gamepad2.left_stick_y);
+            }else{
+                pidFARM.setTarget(farmTarget + 0.1*loopTime*gamepad2.left_stick_y);
+            }
+            if(BARN_UP < barnTarget && barnTarget < BARN_DOWN || !useMotorLimits){
+                pidBARN.setTarget(barnTarget - 0.5*loopTime*gamepad2.right_stick_y);
+            }else {
+                pidBARN.setTarget(barnTarget - 0.1*loopTime*gamepad2.right_stick_y);
+            }
+            //pidBARN.setTarget(pidBARN.getTarget() - 0.5*gamepad2.left_stick_x*loopTime);
+            //pidFARM.setTarget(pidFARM.getTarget() + 0.5*gamepad2.left_stick_y*loopTime);
             pidBARN.update();
             pidFARM.update();
             //
             if(!hangMode) {
                 if ((-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) ||
                         (-gamepad2.right_stick_y > 0 && motorLL.getCurrentPosition() < SLIDE_TOP) || true) {
-                    motorLL.setPower(-gamepad2.right_stick_y);
-                    motorRR.setPower(-gamepad2.right_stick_y);
+                    motorLL.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
+                    motorRR.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
                 } else {
                     motorLL.setPower(0);
                     motorRR.setPower(0);

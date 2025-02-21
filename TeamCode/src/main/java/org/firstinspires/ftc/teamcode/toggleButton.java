@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 public abstract class toggleButton {
 
+    public boolean getToggleState() {
+        return toggleState;
+    }
+
     private boolean toggleState;
     private boolean previousButtonState;
     public enum Edge {

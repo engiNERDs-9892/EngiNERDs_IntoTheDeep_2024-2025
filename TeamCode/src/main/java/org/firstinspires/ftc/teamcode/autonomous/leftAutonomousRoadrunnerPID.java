@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.PoseStorage;
+import org.firstinspires.ftc.teamcode.drive.VariableStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
@@ -32,7 +32,7 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
 
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        PoseStorage.hasRunOpmode = true;
+        VariableStorage.hasRunOpmode = true;
         motorFARM.setTargetPosition(myConstants.FARM_UP);
         motorFARM.setPower(0.4);
         servoWrist.setPosition(servoPositions.WRIST_B);
@@ -249,7 +249,7 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
             pidBARN.update();
             Pose2d poseEstimate = drive.getPoseEstimate();
             // Continually write pose to `PoseStorage`
-            PoseStorage.currentPose = poseEstimate;
+            VariableStorage.currentPose = poseEstimate;
             telemetry.update();
         }
     }
@@ -263,7 +263,7 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
             pidBARN.update();
             Pose2d poseEstimate = drive.getPoseEstimate();
             // Continually write pose to `PoseStorage`
-            PoseStorage.currentPose = poseEstimate;
+            VariableStorage.currentPose = poseEstimate;
             telemetry.update();
         }
     }
