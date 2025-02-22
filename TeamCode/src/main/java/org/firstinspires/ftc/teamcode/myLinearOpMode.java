@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class myLinearOpMode extends LinearOpMode {
+public abstract class myLinearOpMode extends LinearOpMode {
     protected static DcMotor motorFL;
     protected static DcMotor motorFR;
     protected static DcMotor motorBL;
@@ -117,6 +117,22 @@ public class myLinearOpMode extends LinearOpMode {
         motorBR.setPower(power);
     }
 
+    public void openClaw1(){
+        servoClawLeft.setPosition(myConstants.servoPositions.CLAW_LEFT_OPEN);
+        servoClawRight.setPosition(myConstants.servoPositions.CLAW_RIGHT_OPEN);
+    }
+    public void closeClaw1(){
+        servoClawLeft.setPosition(myConstants.servoPositions.CLAW_LEFT_CLOSED);
+        servoClawRight.setPosition(myConstants.servoPositions.CLAW_RIGHT_CLOSED);
+    }
+    public void openClaw2(){
+        servoClawLeft2.setPosition(myConstants.servoPositions.CLAW_LEFT_2_OPEN);
+        servoClawRight2.setPosition(myConstants.servoPositions.CLAW_RIGHT_2_OPEN);
+    }
+    public void closeClaw2(){
+        servoClawLeft2.setPosition(myConstants.servoPositions.CLAW_LEFT_2_CLOSED);
+        servoClawRight2.setPosition(myConstants.servoPositions.CLAW_RIGHT_2_CLOSED);
+    }
     public class PIDFLift{
         public double P = 0.005, I = 0, D = 0.0004;
         PIDController controller;

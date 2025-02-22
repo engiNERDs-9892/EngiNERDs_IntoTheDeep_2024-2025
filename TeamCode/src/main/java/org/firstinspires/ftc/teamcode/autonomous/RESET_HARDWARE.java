@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import static org.firstinspires.ftc.teamcode.opModeGroups.DEFAULT_TELEOP;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
+import org.firstinspires.ftc.teamcode.opModeGroups;
 
-@Autonomous(name = "RESET HARDWARE", preselectTeleOp = "EngiNERDs_Control")
+@Autonomous(name="RESET HARDWARE", group = opModeGroups.auto.BASIC, preselectTeleOp = DEFAULT_TELEOP)
 public class RESET_HARDWARE extends myLinearOpMode {
     public void reset(){
         motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

@@ -100,7 +100,7 @@ public class EngiNERDs_Control extends myLinearOpMode {
             double motorBLPower = (rotY - rotX + r);
             double motorFRPower = (rotY - rotX - r);
             double motorBRPower = (rotY + rotX - r);
-            denominator *= 1.5;
+            denominator *= 1.0;
             if (gamepad1.left_bumper) {
                 denominator *= 2;
             }
@@ -129,12 +129,14 @@ public class EngiNERDs_Control extends myLinearOpMode {
             double barnTarget = pidBARN.getSetPoint();
             double farmTarget = pidFARM.getSetPoint();
             if(FARM_UP < farmTarget && farmTarget < FARM_DOWN || !useMotorLimits){
-                pidFARM.setTarget(farmTarget + 0.5*loopTime*gamepad2.left_stick_y);
-            }else{
+                pidFARM.setTarget(farmTarget + 0.6 *loopTime*gamepad2.left_stick_y);
+            }else if(FARM_UP-20 < farmTarget && farmTarget < FARM_DOWN+20){
                 pidFARM.setTarget(farmTarget + 0.1*loopTime*gamepad2.left_stick_y);
+            }else{
+
             }
             if(BARN_UP < barnTarget && barnTarget < BARN_DOWN || !useMotorLimits){
-                pidBARN.setTarget(barnTarget - 0.5*loopTime*gamepad2.right_stick_y);
+                pidBARN.setTarget(barnTarget - 0.8*loopTime*gamepad2.right_stick_y);
             }else {
                 pidBARN.setTarget(barnTarget - 0.1*loopTime*gamepad2.right_stick_y);
             }

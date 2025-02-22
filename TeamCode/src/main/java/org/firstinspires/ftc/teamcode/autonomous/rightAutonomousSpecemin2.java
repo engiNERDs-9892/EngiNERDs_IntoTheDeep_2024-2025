@@ -8,6 +8,8 @@ import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_FRONT_SPECEMIN;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_FRONT_SPECEMIN_PLAY;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
+import static org.firstinspires.ftc.teamcode.opModeGroups.DEFAULT_TELEOP;
+import static org.firstinspires.ftc.teamcode.opModeGroups.auto.ADVANCED;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -21,8 +23,9 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.opModeGroups;
 
-@Autonomous(group = "advanced", preselectTeleOp = "EngiNERDs_Control")
+@Autonomous(group = opModeGroups.auto.ADVANCED, preselectTeleOp = DEFAULT_TELEOP)
 public class rightAutonomousSpecemin2 extends myLinearOpMode {
     SampleMecanumDrive drive;
 
@@ -45,6 +48,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         lift2.setP(0.01);
 
         VariableStorage.hasRunOpmode = true;
+        telemetry.setAutoClear(false);
 
         //Trajectories
         TrajectorySequence trajectoryPlayPreload = drive.trajectorySequenceBuilder(new Pose2d())
@@ -59,28 +63,45 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
                 .lineToConstantHeading(new Vector2d(12, -10))
                 .splineToConstantHeading(new Vector2d(47, 8), 0)
                 .build();
-        TrajectorySequence trah = drive.trajectorySequenceBuilder(trajectoryPlaySpecemin2.end())
+        TrajectorySequence trajectoryPlaySpecemin2_2 = drive.trajectorySequenceBuilder(trajectoryPlaySpecemin2.end())
+                .back(4)
+                .addTemporalMarker(this::openClaw2)
+                .back(10)
+                .splineToConstantHeading(new Vector2d(0.5, -30), Math.toRadians(180))
+
+                .build();
+
+        TrajectorySequence trajectoryPlaySpecemin3 = drive.trajectorySequenceBuilder(trajectoryGrabSpeceminFromPreload.end())
+                .lineToConstantHeading(new Vector2d(12, -10))
+                .splineToConstantHeading(new Vector2d(47, 8+3), 0)
+                .build();
+        TrajectorySequence trajectoryPlaySpecemin3_2 = drive.trajectorySequenceBuilder(trajectoryPlaySpecemin3.end())
+                .back(4)
+                .addTemporalMarker(this::openClaw2)
                 .back(10)
                 .build();
-        TrajectorySequence trahj = drive.trajectorySequenceBuilder(trah.end())
-                .back(11)
-                .build();
+
         TrajectorySequence trajectoryPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
-                .addTemporalMarker(1.0, ()->{
-                    lift2.setTarget(SLIDE_BOTTOM);
-                })
                 //Go from Poles to spike marks
-                .setReversed(true)
                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
-                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(20*3))
-                .splineTo(new Vector2d(24, -24), Math.toRadians(270)) //Rotate and go out
-                .splineToConstantHeading(new Vector2d(72, -42), Math.toRadians(0)) //Go Around the submersable
-                .splineToConstantHeading(new Vector2d(72, -55), Math.toRadians(180)) // Go up and around the block
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(24, -24), Math.toRadians(270)) //go out
+                .splineToConstantHeading(new Vector2d(72, -47), Math.toRadians(0)) //Go Around the submersable
+                .splineToConstantHeading(new Vector2d(72, -59), Math.toRadians(180)) // Go up and around the block
                 //Go to wall
-                .splineToConstantHeading(new Vector2d(68, -55), Math.toRadians(180)) //Finish pushing the block in
+                //.splineToConstantHeading(new Vector2d(68+4, -59), Math.toRadians(180)) //Finish pushing the block in
                 .setReversed(false)
-                .strafeLeft(52)
-                .resetConstraints()
+                .waitSeconds(0.1)
+                .back(52)
+                .forward(52)
+                .splineToConstantHeading(new Vector2d(68+4, -71), Math.toRadians(180))
+                .waitSeconds(0.1)
+                .back(52)
+                .build();
+        TrajectorySequence trajectoryGrabSpeceminFromPush = drive.trajectorySequenceBuilder(trajectoryPush.end())
+                //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .setTangent(0)
+                .splineToConstantHeading(new Vector2d(0.5, -30), Math.toRadians(180))
                 .build();
 
         waitForStart();//waitForStart();
@@ -104,31 +125,40 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         lift2.setSetPoint(SLIDE_BOTTOM);
         pidFARM.setSetPoint(FARM_UP);
 
+        drive.followTrajectorySequenceAsync(trajectoryPush);
+        updateEverything();
+        //updateEverything(30000);
+
         pidBARN.setSetPoint(BARN_UP+100);//Try not to knock specimen off of wall
-        drive.followTrajectorySequenceAsync(trajectoryGrabSpeceminFromPreload);
+        drive.followTrajectorySequenceAsync(trajectoryGrabSpeceminFromPush);
         updateEverything();
         pidBARN.setSetPoint(BARN_UP);
-        updateEverything(500);
-        servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
-        servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
-        updateEverything(300);
+            updateEverything(500);
+        closeClaw2();
+            updateEverything(300);
         pidBARN.setSetPoint(BARN_DOWN);
         drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin2);
+            updateEverything();
+        pidBARN.setSetPoint(BARN_HIGH_CHAMBER-60);//Compensate for current lack of a feedforward term
+            updateEverything(500);
+        drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin2_2);
+            updateEverything();
+
+
+        pidBARN.setSetPoint(BARN_UP);
+        updateEverything(500);
+        closeClaw2();
+        updateEverything(300);
+        pidBARN.setSetPoint(BARN_DOWN);
+        drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin3);
         updateEverything();
         pidBARN.setSetPoint(BARN_HIGH_CHAMBER-60);//Compensate for current lack of a feedforward term
         updateEverything(500);
-        drive.followTrajectorySequenceAsync(trah);
+        drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin3_2);
         updateEverything();
-        servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
-        servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
-        drive.followTrajectorySequenceAsync(trahj);
-        updateEverything();
-        updateEverything(10000);
         //DONE
-        telemetry.setAutoClear(false);
         telemetry.addData("Time", timer.seconds());
         telemetry.update();
-        telemetry.setAutoClear(true);
         sleep(5000);
     }
 

@@ -27,7 +27,7 @@ public class myConstants {
     public static int SLIDE_HIGH_CHAMBER = 3700;
     public static int SLIDE_HIGH_CHAMBER_PLAY = 2960;
     public static final int FARM_UP = 10;
-    public static final int FARM_DOWN = 340;
+    public static final int FARM_DOWN = 345;
     public static final int FARM_AUTO_SAMPLE_GRAB = 380-10;
     public static int FARM_AUTO_FRONT_SPECEMIN = 60;
     public static int BARN_UP = 0;
