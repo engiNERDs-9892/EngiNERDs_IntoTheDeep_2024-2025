@@ -4,8 +4,12 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorDigitalTouch;
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public abstract class myLinearOpMode extends LinearOpMode {
     protected static DcMotor motorFL;
@@ -23,10 +27,14 @@ public abstract class myLinearOpMode extends LinearOpMode {
     protected static Servo servoWrist;
     protected static GoBildaPinpointDriver odo;
     protected static IMU imu;
+    protected static DigitalChannel sensorSlide;
+    protected static DigitalChannel sensorBARN;
     protected static PIDFLift lift;
     protected static PIDMotor lift2;
     protected static PIDMotor pidFARM;
     protected static PIDMotor pidBARN;
+    protected static encoderOffset slidePosition;
+    protected static encoderOffset BARNPosition;
     public static double unitsPerTick = 10;
     protected static double drivePower;
     @Override
@@ -46,6 +54,8 @@ public abstract class myLinearOpMode extends LinearOpMode {
         servoClawLeft2 = hardwareMap.servo.get("servo2Left");
         servoClawRight2 = hardwareMap.servo.get("servo2Right");
         servoWrist = hardwareMap.servo.get("servoWrist");
+        sensorSlide = hardwareMap.get(DigitalChannel.class, "sensorSlide");
+        sensorBARN = hardwareMap.get(DigitalChannel.class, "sensorBARN");
         //imu = hardwareMap.get(IMU.class, "imu");
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         //Initialize motors
@@ -71,16 +81,33 @@ public abstract class myLinearOpMode extends LinearOpMode {
         servoClawRight.setDirection(Servo.Direction.REVERSE);
         servoClawLeft2.setDirection(Servo.Direction.REVERSE);
         servoClawRight2.setDirection(Servo.Direction.FORWARD);
+        //Initialize digital ports
+        //Values returned from port are reversed from what you may expect
+        sensorBARN.setMode(DigitalChannel.Mode.INPUT);
+        sensorSlide.setMode(DigitalChannel.Mode.INPUT);
         //Initialize pinpoint
         //TODO change offsets
         odo.setOffsets(myConstants.X_OFFSET, myConstants.Y_OFFSET);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(myConstants.xEncoder_DIRECTION, myConstants.yEncoder_DIRECTION);
         //
+        slidePosition = new encoderOffset(motorLL);
+        BARNPosition = new encoderOffset(motorBARN);
+        //
         lift = new PIDFLift();
         lift2 = new PIDMotor(new DcMotor[]{motorLL, motorRR});
-        pidBARN = new PIDMotor(new DcMotor[]{motorBARN});
-        pidFARM = new PIDMotor(new DcMotor[]{motorFARM});
+        pidBARN = new PIDMotor(new DcMotor[]{motorBARN}){
+            @Override
+            public int getCurrentPosition() {
+                return BARNPosition.getPosition();
+            }
+        };
+        pidFARM = new PIDMotor(new DcMotor[]{motorFARM}){
+            @Override
+            public int getCurrentPosition() {
+                return slidePosition.getPosition();
+            }
+        };
         //odo.resetPosAndIMU();
         /*
         //Initialize IMU
@@ -194,7 +221,19 @@ public abstract class myLinearOpMode extends LinearOpMode {
             }
         }
     }
-
+    public class encoderOffset{
+        private int offset;
+        public void setPosition(int position){
+            offset = position - motor.getCurrentPosition();
+        }
+        public int getPosition(){
+            return motor.getCurrentPosition() + offset;
+        }
+        private final DcMotor motor;
+        encoderOffset(DcMotor motor){
+            this.motor = motor;
+        }
+    }
     public class PIDMotor extends PIDController{
         public static final double P = 0.005, I = 0, D = 0.0004;//Default values
         //PIDController controller;
@@ -206,6 +245,10 @@ public abstract class myLinearOpMode extends LinearOpMode {
         private double target;
         public boolean isActive() {
             return isActive;
+        }
+
+        public int getCurrentPosition(){
+            return motors[0].getCurrentPosition();
         }
 
         @Override
@@ -256,7 +299,7 @@ public abstract class myLinearOpMode extends LinearOpMode {
 
         public void update() {
             if(isActive){
-                int motorPosition = motors[0].getCurrentPosition();
+                int motorPosition = getCurrentPosition();
                 double pid = calculate(motorPosition, target);
                 for (DcMotor motor: motors) {
                     motor.setPower(pid);

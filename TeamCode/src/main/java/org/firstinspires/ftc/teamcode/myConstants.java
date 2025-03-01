@@ -22,7 +22,7 @@ public class myConstants {
     public static int SLIDE_AUTO_ASCENT = 1700;
     public static int SLIDE_HIGH_BASKET = 5300;
     public static int SLIDE_AUTO_FRONT_SPECEMIN = 2200;
-    public static int SLIDE_AUTO_FRONT_SPECEMIN_PLAY = 1000;
+    public static int SLIDE_AUTO_FRONT_SPECEMIN_PLAY = 1800;
     public static int SLIDE_TOP = 5300;
     public static int SLIDE_HIGH_CHAMBER = 3700;
     public static int SLIDE_HIGH_CHAMBER_PLAY = 2960;

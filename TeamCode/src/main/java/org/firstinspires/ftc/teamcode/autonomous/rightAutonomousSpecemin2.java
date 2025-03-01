@@ -32,7 +32,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();//Initialization
-        drive = new SampleMecanumDrive(hardwareMap);
+        drive = new SampleMecanumDrive(hardwareMap, 0.3);
         //Servos
         servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
         servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
@@ -52,7 +52,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
 
         //Trajectories
         TrajectorySequence trajectoryPlayPreload = drive.trajectorySequenceBuilder(new Pose2d())
-                .lineToConstantHeading(new Vector2d(36.5, 6))
+                .lineToConstantHeading(new Vector2d(36.5+1, 6))
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPreload = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
@@ -84,6 +84,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         TrajectorySequence trajectoryPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //Go from Poles to spike marks
                 .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(25))
                 .setReversed(true)
                 .splineToConstantHeading(new Vector2d(24, -24), Math.toRadians(270)) //go out
                 .splineToConstantHeading(new Vector2d(72, -47), Math.toRadians(0)) //Go Around the submersable
@@ -94,7 +95,8 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
                 .waitSeconds(0.1)
                 .back(52)
                 .forward(52)
-                .splineToConstantHeading(new Vector2d(68+4, -71), Math.toRadians(180))
+                //.splineToConstantHeading(new Vector2d(72, -59), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(68+4, -71), Math.toRadians(230))
                 .waitSeconds(0.1)
                 .back(52)
                 .build();
@@ -118,7 +120,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         drive.followTrajectorySequenceAsync(trajectoryPlayPreload);
         updateEverything();
         lift2.setSetPoint(SLIDE_AUTO_FRONT_SPECEMIN_PLAY);
-        updateEverything(500);
+        updateEverything(700);
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
         updateEverything(300);

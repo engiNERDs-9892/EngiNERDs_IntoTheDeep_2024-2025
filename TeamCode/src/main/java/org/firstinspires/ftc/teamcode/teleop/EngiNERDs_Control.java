@@ -7,6 +7,9 @@ import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -92,8 +95,8 @@ public class EngiNERDs_Control extends myLinearOpMode {
 
             double heading = useFieldCentric ? odo.getHeading() : 0;
             //Rotate the heading
-            double rotX = x * Math.cos(-heading) - y * Math.sin(-heading);
-            double rotY = x * Math.sin(-heading) + y * Math.cos(-heading);
+            double rotX = x * cos(-heading) - y * sin(-heading);
+            double rotY = x * sin(-heading) + y * cos(-heading);
 
             double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(r), 1);
             double motorFLPower = (rotY + rotX + r);
@@ -127,35 +130,44 @@ public class EngiNERDs_Control extends myLinearOpMode {
             motorBR.setPower(motorBRPower);
 
             double barnTarget = pidBARN.getSetPoint();
-            double farmTarget = pidFARM.getSetPoint();
-            if(FARM_UP < farmTarget && farmTarget < FARM_DOWN || !useMotorLimits){
-                pidFARM.setTarget(farmTarget + 0.6 *loopTime*gamepad2.left_stick_y);
-            }else if(FARM_UP-20 < farmTarget && farmTarget < FARM_DOWN+20){
-                pidFARM.setTarget(farmTarget + 0.1*loopTime*gamepad2.left_stick_y);
-            }else{
-
+            double farmTarget = pidFARM.getSetPoint();//Unused
+            double farmStick = gamepad2.left_stick_y;
+            double barnStick = -gamepad2.right_stick_y;
+            double slideStick = gamepad2.right_trigger-gamepad2.left_trigger;
+            if(farmStick != 0 || (motorFARM.getCurrentPosition() < 320 && !sensorSlide.getState())){
+                motorFARM.setPower(
+                        farmStick*0.4 +
+                        -0.2*sin(motorFARM.getCurrentPosition()*myConstants.FARM_RADIANS_PER_TICK)
+                );
+            } else {
+                motorFARM.setPower(0);
             }
-            if(BARN_UP < barnTarget && barnTarget < BARN_DOWN || !useMotorLimits){
-                pidBARN.setTarget(barnTarget - 0.8*loopTime*gamepad2.right_stick_y);
+
+            if(!sensorBARN.getState()){
+                BARNPosition.setPosition(0);
+                pidBARN.setTarget(Math.max(pidBARN.getSetPoint() + 0.8*loopTime*barnStick, 0));
+            }else if(BARN_UP < barnTarget && barnTarget < BARN_DOWN || !useMotorLimits){
+                pidBARN.setTarget(barnTarget + 0.8*loopTime*barnStick);
             }else {
-                pidBARN.setTarget(barnTarget - 0.1*loopTime*gamepad2.right_stick_y);
+                pidBARN.setTarget(barnTarget + 0.1*loopTime*barnStick);
             }
             //pidBARN.setTarget(pidBARN.getTarget() - 0.5*gamepad2.left_stick_x*loopTime);
             //pidFARM.setTarget(pidFARM.getTarget() + 0.5*gamepad2.left_stick_y*loopTime);
             pidBARN.update();
-            pidFARM.update();
+            //pidFARM.update();
             //
             if(!hangMode) {
-                if ((-gamepad2.right_stick_y < 0 && motorLL.getCurrentPosition() > SLIDE_BOTTOM) ||
-                        (-gamepad2.right_stick_y > 0 && motorLL.getCurrentPosition() < SLIDE_TOP) || true) {
-                    motorLL.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
-                    motorRR.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
+                if ((slideStick < 0 && slidePosition.getPosition() > SLIDE_BOTTOM) ||
+                        (slideStick > 0 && slidePosition.getPosition() < SLIDE_TOP) || false) {
+                    motorLL.setPower(slideStick);
+                    motorRR.setPower(slideStick);
                 } else {
-                    motorLL.setPower(0);
-                    motorRR.setPower(0);
-
-
+                    motorLL.setPower(slideStick * 0.1);
+                    motorRR.setPower(slideStick * 0.1);
                 }
+            }
+            if(!sensorSlide.getState()){
+                slidePosition.setPosition(0);
             }
 
             hangToggle.update(gamepad2.back);
@@ -166,12 +178,15 @@ public class EngiNERDs_Control extends myLinearOpMode {
 
             wristToggle.update(gamepad2.x);
             //
-            telemetry.addData("Lifty", motorLL.getCurrentPosition());
-            telemetry.addData("Risey", motorRR.getCurrentPosition());
+            //telemetry.addData("Lifty", motorLL.getCurrentPosition());
+            //telemetry.addData("Risey", motorRR.getCurrentPosition());
+            telemetry.addData("Slide", slidePosition.getPosition());
             telemetry.addData("FARM", motorFARM.getCurrentPosition());
-            telemetry.addData("BARN", motorBARN.getCurrentPosition());
+            telemetry.addData("BARN", BARNPosition.getPosition());
             telemetry.addData("BARN/1425.1", motorBARN.getCurrentPosition()/1425.1);
             telemetry.addData("Field Centric", useFieldCentric);
+            telemetry.addData("barnS" ,sensorBARN.getState());
+            telemetry.addData("SlideS" ,sensorSlide.getState());
             telemetry.update();
         }
     }
