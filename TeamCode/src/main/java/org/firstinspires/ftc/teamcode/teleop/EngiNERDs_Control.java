@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import static org.firstinspires.ftc.teamcode.myConstants.BARN_DOWN;
 import static org.firstinspires.ftc.teamcode.myConstants.BARN_UP;
-import static org.firstinspires.ftc.teamcode.myConstants.FARM_DOWN;
-import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
@@ -129,8 +127,8 @@ public class EngiNERDs_Control extends myLinearOpMode {
             motorBL.setPower(motorBLPower);
             motorBR.setPower(motorBRPower);
 
-            double barnTarget = pidBARN.getSetPoint();
-            double farmTarget = pidFARM.getSetPoint();//Unused
+            double barnTarget = pidBARN.getTarget();
+            double farmTarget = pidFARM.getTarget();//Unused
             double farmStick = gamepad2.left_stick_y;
             double barnStick = -gamepad2.right_stick_y;
             double slideStick = gamepad2.right_trigger-gamepad2.left_trigger;
@@ -144,8 +142,8 @@ public class EngiNERDs_Control extends myLinearOpMode {
             }
 
             if(!sensorBARN.getState()){
-                BARNPosition.setPosition(0);
-                pidBARN.setTarget(Math.max(pidBARN.getSetPoint() + 0.8*loopTime*barnStick, 0));
+                pidBARN.setPosition(0);
+                pidBARN.setTarget(Math.max(pidBARN.getTarget() + 0.8*loopTime*barnStick, 0));
             }else if(BARN_UP < barnTarget && barnTarget < BARN_DOWN || !useMotorLimits){
                 pidBARN.setTarget(barnTarget + 0.8*loopTime*barnStick);
             }else {
@@ -157,8 +155,8 @@ public class EngiNERDs_Control extends myLinearOpMode {
             //pidFARM.update();
             //
             if(!hangMode) {
-                if ((slideStick < 0 && slidePosition.getPosition() > SLIDE_BOTTOM) ||
-                        (slideStick > 0 && slidePosition.getPosition() < SLIDE_TOP) || false) {
+                if ((slideStick < 0 && lift2.getPosition() > SLIDE_BOTTOM) ||
+                        (slideStick > 0 && lift2.getPosition() < SLIDE_TOP) || false) {
                     motorLL.setPower(slideStick);
                     motorRR.setPower(slideStick);
                 } else {
@@ -167,7 +165,7 @@ public class EngiNERDs_Control extends myLinearOpMode {
                 }
             }
             if(!sensorSlide.getState()){
-                slidePosition.setPosition(0);
+                lift2.setPosition(0);
             }
 
             hangToggle.update(gamepad2.back);
@@ -180,9 +178,9 @@ public class EngiNERDs_Control extends myLinearOpMode {
             //
             //telemetry.addData("Lifty", motorLL.getCurrentPosition());
             //telemetry.addData("Risey", motorRR.getCurrentPosition());
-            telemetry.addData("Slide", slidePosition.getPosition());
+            telemetry.addData("Slide", lift2.getPosition());
             telemetry.addData("FARM", motorFARM.getCurrentPosition());
-            telemetry.addData("BARN", BARNPosition.getPosition());
+            telemetry.addData("BARN", pidBARN.getPosition());
             telemetry.addData("BARN/1425.1", motorBARN.getCurrentPosition()/1425.1);
             telemetry.addData("Field Centric", useFieldCentric);
             telemetry.addData("barnS" ,sensorBARN.getState());

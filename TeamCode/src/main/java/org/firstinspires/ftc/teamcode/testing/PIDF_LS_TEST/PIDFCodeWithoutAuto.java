@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.VariableStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -32,7 +33,7 @@ public class PIDFCodeWithoutAuto extends myLinearOpMode {
 
         // Initialize our lift function (Initialize our linear slides)
 
-        PIDFLift lift = new PIDFLift();
+        motorsController lift = new motorsController(new DcMotor[]{motorLL, motorRR});
 
         // Set inital pose
         drive.setPoseEstimate(new Pose2d());

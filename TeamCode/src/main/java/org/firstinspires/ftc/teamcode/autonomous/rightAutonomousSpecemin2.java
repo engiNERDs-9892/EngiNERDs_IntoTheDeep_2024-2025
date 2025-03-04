@@ -9,7 +9,6 @@ import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_FRONT_SPECEM
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_AUTO_FRONT_SPECEMIN_PLAY;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.opModeGroups.DEFAULT_TELEOP;
-import static org.firstinspires.ftc.teamcode.opModeGroups.auto.ADVANCED;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -45,7 +44,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         motorFARM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBARN.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //PID stuff
-        lift2.setP(0.01);
+        lift2.setPID(0.01, motorsController.I, motorsController.D);
 
         VariableStorage.hasRunOpmode = true;
         telemetry.setAutoClear(false);
@@ -110,51 +109,51 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         ElapsedTime timer = new ElapsedTime();
 
 
-        pidFARM.setSetPoint(FARM_AUTO_FRONT_SPECEMIN);
-        pidBARN.setSetPoint(0);
-        lift2.setSetPoint(SLIDE_AUTO_FRONT_SPECEMIN);
+        pidFARM.setTarget(FARM_AUTO_FRONT_SPECEMIN);
+        pidBARN.setTarget(0);
+        lift2.setTarget(SLIDE_AUTO_FRONT_SPECEMIN);
         pidFARM.setActive(true);
         pidBARN.setActive(true);
         lift2.setActive(true);
 
         drive.followTrajectorySequenceAsync(trajectoryPlayPreload);
         updateEverything();
-        lift2.setSetPoint(SLIDE_AUTO_FRONT_SPECEMIN_PLAY);
+        lift2.setTarget(SLIDE_AUTO_FRONT_SPECEMIN_PLAY);
         updateEverything(700);
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
         updateEverything(300);
-        lift2.setSetPoint(SLIDE_BOTTOM);
-        pidFARM.setSetPoint(FARM_UP);
+        lift2.setTarget(SLIDE_BOTTOM);
+        pidFARM.setTarget(FARM_UP);
 
         drive.followTrajectorySequenceAsync(trajectoryPush);
         updateEverything();
         //updateEverything(30000);
 
-        pidBARN.setSetPoint(BARN_UP+100);//Try not to knock specimen off of wall
+        pidBARN.setTarget(BARN_UP+100);//Try not to knock specimen off of wall
         drive.followTrajectorySequenceAsync(trajectoryGrabSpeceminFromPush);
         updateEverything();
-        pidBARN.setSetPoint(BARN_UP);
+        pidBARN.setTarget(BARN_UP);
             updateEverything(500);
         closeClaw2();
             updateEverything(300);
-        pidBARN.setSetPoint(BARN_DOWN);
+        pidBARN.setTarget(BARN_DOWN);
         drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin2);
             updateEverything();
-        pidBARN.setSetPoint(BARN_HIGH_CHAMBER-60);//Compensate for current lack of a feedforward term
+        pidBARN.setTarget(BARN_HIGH_CHAMBER-60);//Compensate for current lack of a feedforward term
             updateEverything(500);
         drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin2_2);
             updateEverything();
 
 
-        pidBARN.setSetPoint(BARN_UP);
+        pidBARN.setTarget(BARN_UP);
         updateEverything(500);
         closeClaw2();
         updateEverything(300);
-        pidBARN.setSetPoint(BARN_DOWN);
+        pidBARN.setTarget(BARN_DOWN);
         drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin3);
         updateEverything();
-        pidBARN.setSetPoint(BARN_HIGH_CHAMBER-60);//Compensate for current lack of a feedforward term
+        pidBARN.setTarget(BARN_HIGH_CHAMBER-60);//Compensate for current lack of a feedforward term
         updateEverything(500);
         drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin3_2);
         updateEverything();

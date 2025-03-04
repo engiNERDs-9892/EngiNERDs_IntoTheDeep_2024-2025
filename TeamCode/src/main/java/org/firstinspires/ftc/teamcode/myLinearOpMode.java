@@ -8,9 +8,6 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorDigitalTouch;
-import org.firstinspires.ftc.teamcode.util.Encoder;
-
 public abstract class myLinearOpMode extends LinearOpMode {
     protected static DcMotor motorFL;
     protected static DcMotor motorFR;
@@ -29,12 +26,10 @@ public abstract class myLinearOpMode extends LinearOpMode {
     protected static IMU imu;
     protected static DigitalChannel sensorSlide;
     protected static DigitalChannel sensorBARN;
-    protected static PIDFLift lift;
-    protected static PIDMotor lift2;
-    protected static PIDMotor pidFARM;
-    protected static PIDMotor pidBARN;
-    protected static encoderOffset slidePosition;
-    protected static encoderOffset BARNPosition;
+    protected static motorsController lift;
+    protected static motorsController lift2;
+    protected static motorsController pidFARM;
+    protected static motorsController pidBARN;
     public static double unitsPerTick = 10;
     protected static double drivePower;
     @Override
@@ -91,23 +86,12 @@ public abstract class myLinearOpMode extends LinearOpMode {
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(myConstants.xEncoder_DIRECTION, myConstants.yEncoder_DIRECTION);
         //
-        slidePosition = new encoderOffset(motorLL);
-        BARNPosition = new encoderOffset(motorBARN);
+
         //
-        lift = new PIDFLift();
-        lift2 = new PIDMotor(new DcMotor[]{motorLL, motorRR});
-        pidBARN = new PIDMotor(new DcMotor[]{motorBARN}){
-            @Override
-            public int getCurrentPosition() {
-                return BARNPosition.getPosition();
-            }
-        };
-        pidFARM = new PIDMotor(new DcMotor[]{motorFARM}){
-            @Override
-            public int getCurrentPosition() {
-                return slidePosition.getPosition();
-            }
-        };
+        lift2 = new motorsController(new DcMotor[]{motorLL, motorRR});
+        lift = lift2;
+        pidBARN = new motorsController(new DcMotor[]{motorBARN});
+        pidFARM = new motorsController(new DcMotor[]{motorFARM});
         //odo.resetPosAndIMU();
         /*
         //Initialize IMU
@@ -160,67 +144,7 @@ public abstract class myLinearOpMode extends LinearOpMode {
         servoClawLeft2.setPosition(myConstants.servoPositions.CLAW_LEFT_2_CLOSED);
         servoClawRight2.setPosition(myConstants.servoPositions.CLAW_RIGHT_2_CLOSED);
     }
-    public class PIDFLift{
-        public double P = 0.005, I = 0, D = 0.0004;
-        PIDController controller;
-        private boolean useTelemetry;
 
-        public boolean isActive() {
-            return isActive;
-        }
-
-        public void setActive(boolean active) {
-            isActive = active;
-        }
-
-        private boolean isActive;
-        public void setTarget(double target) {
-            this.target = target;
-        }
-        private double target;
-        public PIDFLift() {
-            // Beep boop this is the the constructor for the lift
-            // Assume this sets up the lift hardware
-
-            // Calculating variables
-            controller = new PIDController(P, I, D);
-            // Start the Slides down during the initialization phase
-            target = 0;
-            useTelemetry = true;
-            isActive = true;
-        }
-
-        public void update() {
-            if(isActive){
-                // Beep boop this is the lift update function
-                // Assume this runs some PID controller for the lift
-
-                // Gives the controller specific values to use while calculating
-                // Why do we have to feed it in every loop iteration?
-                controller.setPID(P, I,D);
-
-                // These two lines of code track where the motor current position to
-                // calculate the proper power of the motors
-                int LinearSlide_Pos1 = motorRR.getCurrentPosition();
-                int LinearSlide_Pos2 = motorLL.getCurrentPosition();
-
-                // this calculates the distance from how far the motor distance is from reaching the target in ticks
-                double pid = controller.calculate(LinearSlide_Pos1,target);
-
-                // Sets the LS Power
-                motorRR.setPower(pid);
-                motorLL.setPower(pid);
-
-                if(useTelemetry){
-                    // Telemetry making sure that everything is running as it should
-                    telemetry.addData("RR Pos", LinearSlide_Pos1);
-                    telemetry.addData("LL Pos", LinearSlide_Pos2);
-                    telemetry.addData("pid", pid);
-                    telemetry.addData("Target Pos", target);
-                }
-            }
-        }
-    }
     public class encoderOffset{
         private int offset;
         public void setPosition(int position){
@@ -234,12 +158,17 @@ public abstract class myLinearOpMode extends LinearOpMode {
             this.motor = motor;
         }
     }
-    public class PIDMotor extends PIDController{
+    public class motorsController {
+        /**
+         * Default values for PID coefficients
+         */
         public static final double P = 0.005, I = 0, D = 0.0004;//Default values
-        //PIDController controller;
+
+        private PIDController controller;
         private boolean useTelemetry;
         private boolean isActive;
         private DcMotor[] motors;
+        private int offset; // Offset for encoder values
 
 
         private double target;
@@ -247,50 +176,51 @@ public abstract class myLinearOpMode extends LinearOpMode {
             return isActive;
         }
 
-        public int getCurrentPosition(){
-            return motors[0].getCurrentPosition();
+        public void setPosition(int position){
+            offset = position - getCurrentPosition();
         }
-
-        @Override
-        public void setSetPoint(double sp) {
-            super.setSetPoint(sp);
-            this.target = sp;
+        public int getPosition(){
+            return getCurrentPosition() + offset;
+        }
+        private int getCurrentPosition(){
+            return motors[0].getCurrentPosition();
         }
 
         public void setActive(boolean active) {
             isActive = active;
         }
-        @Deprecated
         public void setTarget(double target) {//setSetPoint
             this.target = target;
         }
-        @Deprecated
         public double getTarget() {//setSetPoint
-            return target;
+            return this.target;
         }
-        public PIDMotor(DcMotor[] motors) {
-            super(P, I, D);
+        public void setPID(double P, double I, double D){
+            this.controller.setPID(P, I, D);
+        }
+        public motorsController(DcMotor[] motors) {
+            controller = new PIDController(P, I, D);
             this.motors = motors;
             target = 0;
             useTelemetry = false;
             isActive = false;
         }
-        public PIDMotor(DcMotor motor) {
-            super(P, I, D);
+        public motorsController(DcMotor motor) {
+            controller = new PIDController(P, I, D);
             this.motors = new DcMotor[]{motor};
             target = 0;
             useTelemetry = false;
             isActive = false;
         }
-        public PIDMotor(DcMotor[] motors, double P, double I, double D) {
-            super(P, I, D);
+        public motorsController(DcMotor[] motors, double P, double I, double D) {
+            controller = new PIDController(P, I, D);
             this.motors = motors;
             target = 0;
             useTelemetry = false;
             isActive = false;
         }
-        public PIDMotor(DcMotor motor, double P, double I, double D) {
-            super(P, I, D);
+        public motorsController(DcMotor motor, double P, double I, double D) {
+            controller = new PIDController(P, I, D);
             this.motors = new DcMotor[]{motor};
             target = 0;
             useTelemetry = false;
@@ -299,8 +229,8 @@ public abstract class myLinearOpMode extends LinearOpMode {
 
         public void update() {
             if(isActive){
-                int motorPosition = getCurrentPosition();
-                double pid = calculate(motorPosition, target);
+                int motorPosition = getPosition();
+                double pid = controller.calculate(motorPosition, target);
                 for (DcMotor motor: motors) {
                     motor.setPower(pid);
                 }
