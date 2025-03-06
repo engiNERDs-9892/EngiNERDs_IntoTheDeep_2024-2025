@@ -34,10 +34,16 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
 
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorRR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorRR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         VariableStorage.hasRunOpmode = true;
         motorFARM.setTargetPosition(myConstants.FARM_UP);
         motorFARM.setPower(0.4);
         servoWrist.setPosition(servoPositions.WRIST_B);
+        lift.setActive(true);
         final Vector2d basketPosition = new Vector2d(-0.5, 35.25);
         final Vector2d sample1PickupPosition = new Vector2d(57.75, 2.25);
         final Vector2d sample2PickupPosition = new Vector2d(57.75, 16.875);
@@ -228,11 +234,6 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
         drive.followTrajectorySequenceAsync(trajectoryPlaySample3);
         updateEverything();
 
-        //drive.followTrajectorySequence(trajectoryPlayPreload);
-        //drive.followTrajectorySequence(trajectoryPlaySample1);
-        //drive.followTrajectorySequence(trajectoryPlaySample2);
-        //drive.followTrajectorySequence(trajectoryPlaySample3);
-
         telemetry.addData("Time1", timer.seconds());
         telemetry.update();
         drive.followTrajectorySequenceAsync(trajectory2b);
@@ -245,28 +246,31 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
     }
     void updateEverything(){
         while (opModeIsActive() && drive.isBusy()) {
-            drive.update();
-            lift.update();
-            //pidFARM.update();
-            pidBARN.update();
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            // Continually write pose to `PoseStorage`
-            VariableStorage.currentPose = poseEstimate;
-            telemetry.update();
+            updateEverythingIteration();
         }
     }
     void updateEverything(double milliseconds){
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
         while (opModeIsActive() && timer.milliseconds() < milliseconds) {
-            drive.update();
-            lift.update();
-            //pidFARM.update();
-            pidBARN.update();
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            // Continually write pose to `PoseStorage`
-            VariableStorage.currentPose = poseEstimate;
-            telemetry.update();
+            updateEverythingIteration();
         }
+    }
+
+    private void updateEverythingIteration() {
+        drive.update();
+        lift.update();
+        //pidFARM.update();
+        pidBARN.update();
+        /*if(!sensorBARN.getState()){
+            pidBARN.setPosition(0);
+        }
+        if(!sensorSlide.getState()){
+            lift2.setPosition(0);
+        }*/
+        Pose2d poseEstimate = drive.getPoseEstimate();
+        // Continually write pose to `PoseStorage`
+        VariableStorage.currentPose = poseEstimate;
+        telemetry.update();
     }
 }

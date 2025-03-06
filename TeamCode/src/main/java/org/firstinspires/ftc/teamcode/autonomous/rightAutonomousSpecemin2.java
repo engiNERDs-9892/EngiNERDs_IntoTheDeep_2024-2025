@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import static org.firstinspires.ftc.teamcode.myConstants.BARN_DOWN;
+import static org.firstinspires.ftc.teamcode.myConstants.BARN_GRAB;
 import static org.firstinspires.ftc.teamcode.myConstants.BARN_HIGH_CHAMBER;
+import static org.firstinspires.ftc.teamcode.myConstants.BARN_RADIANS_PER_TICK;
 import static org.firstinspires.ftc.teamcode.myConstants.BARN_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.FARM_AUTO_FRONT_SPECEMIN;
 import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
@@ -16,9 +18,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.VariableStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.motorsController;
 import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -44,14 +46,13 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         motorFARM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBARN.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //PID stuff
-        lift2.setPID(0.01, motorsController.I, motorsController.D);
-
+        lift2.setPID(0.003, motorsController.I, motorsController.D);
+        pidBARN.setArmFactors(0.02, 0.004408f);
         VariableStorage.hasRunOpmode = true;
-        telemetry.setAutoClear(false);
 
         //Trajectories
         TrajectorySequence trajectoryPlayPreload = drive.trajectorySequenceBuilder(new Pose2d())
-                .lineToConstantHeading(new Vector2d(36.5+1, 6))
+                .lineToConstantHeading(new Vector2d(38, 6))
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPreload = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
@@ -66,6 +67,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
                 .back(4)
                 .addTemporalMarker(this::openClaw2)
                 .back(10)
+                .addTemporalMarker(() -> pidFARM.setTarget(BARN_UP))
                 .splineToConstantHeading(new Vector2d(0.5, -30), Math.toRadians(180))
 
                 .build();
@@ -82,22 +84,22 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
 
         TrajectorySequence trajectoryPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //Go from Poles to spike marks
-                .setVelConstraint(SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
-                .setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(25))
+                //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
+                //.setAccelConstraint(SampleMecanumDrive.getAccelerationConstraint(25))
                 .setReversed(true)
                 .splineToConstantHeading(new Vector2d(24, -24), Math.toRadians(270)) //go out
-                .splineToConstantHeading(new Vector2d(72, -47), Math.toRadians(0)) //Go Around the submersable
-                .splineToConstantHeading(new Vector2d(72, -59), Math.toRadians(180)) // Go up and around the block
+                //.splineToConstantHeading(new Vector2d(76, -47), Math.toRadians(270)) //Go Around the submersable
+                .splineToConstantHeading(new Vector2d(79, -60), Math.toRadians(280)) // Go up and around the block
                 //Go to wall
                 //.splineToConstantHeading(new Vector2d(68+4, -59), Math.toRadians(180)) //Finish pushing the block in
                 .setReversed(false)
                 .waitSeconds(0.1)
-                .back(52)
-                .forward(52)
+                .back(60)
+                .forward(60)
                 //.splineToConstantHeading(new Vector2d(72, -59), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(68+4, -71), Math.toRadians(230))
+                .splineToConstantHeading(new Vector2d(79, -76), Math.toRadians(280))
                 .waitSeconds(0.1)
-                .back(52)
+                .back(60)
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPush = drive.trajectorySequenceBuilder(trajectoryPush.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
@@ -116,10 +118,12 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         pidBARN.setActive(true);
         lift2.setActive(true);
 
+        pidBARN.useTelemetry(telemetry, "pidBARN");
+
         drive.followTrajectorySequenceAsync(trajectoryPlayPreload);
         updateEverything();
         lift2.setTarget(SLIDE_AUTO_FRONT_SPECEMIN_PLAY);
-        updateEverything(700);
+        updateEverything(800);
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_OPEN);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_OPEN);
         updateEverything(300);
@@ -130,10 +134,9 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         updateEverything();
         //updateEverything(30000);
 
-        pidBARN.setTarget(BARN_UP+100);//Try not to knock specimen off of wall
+        pidBARN.setTarget(BARN_UP);//Try not to knock specimen off of wall
         drive.followTrajectorySequenceAsync(trajectoryGrabSpeceminFromPush);
         updateEverything();
-        pidBARN.setTarget(BARN_UP);
             updateEverything(500);
         closeClaw2();
             updateEverything(300);
@@ -167,28 +170,32 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
 
     void updateEverything(){
         while (opModeIsActive() && drive.isBusy()) {
-            drive.update();
-            lift2.update();
-            pidFARM.update();
-            pidBARN.update();
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            // Continually write pose to `PoseStorage`
-            VariableStorage.currentPose = poseEstimate;
-            telemetry.update();
+            updateIteration();
         }
     }
     void updateEverything(double milliseconds){
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
         while (opModeIsActive() && timer.milliseconds() < milliseconds) {
-            drive.update();
-            lift2.update();
-            pidFARM.update();
-            pidBARN.update();
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            // Continually write pose to `PoseStorage`
-            VariableStorage.currentPose = poseEstimate;
-            telemetry.update();
+            updateIteration();
         }
+    }
+
+    private void updateIteration() {
+        drive.update();
+        lift2.update();
+        pidFARM.update();
+        pidBARN.update();
+        if(!sensorBARN.getState()){
+            pidBARN.setPosition(0);
+        }
+        if(!sensorSlide.getState()){
+            lift2.setPosition(0);
+        }
+        telemetry.addData("SensorSlide", !sensorSlide.getState());
+        Pose2d poseEstimate = drive.getPoseEstimate();
+        // Continually write pose to `PoseStorage`
+        VariableStorage.currentPose = poseEstimate;
+        telemetry.update();
     }
 }

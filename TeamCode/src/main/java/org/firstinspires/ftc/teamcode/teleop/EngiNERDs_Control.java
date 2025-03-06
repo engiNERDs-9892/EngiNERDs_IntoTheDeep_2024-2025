@@ -169,8 +169,8 @@ public class EngiNERDs_Control extends myLinearOpMode {
             }
 
             hangToggle.update(gamepad2.back);
-            clawLeftToggle.update(gamepad2.a);
-            clawRightToggle.update(gamepad2.a);
+            clawLeftToggle.update(gamepad2.a || gamepad1.a);
+            clawRightToggle.update(gamepad2.a || gamepad1.a);
             clawLeft2Toggle.update(gamepad2.y);
             clawRight2Toggle.update(gamepad2.y);
 
@@ -181,10 +181,10 @@ public class EngiNERDs_Control extends myLinearOpMode {
             telemetry.addData("Slide", lift2.getPosition());
             telemetry.addData("FARM", motorFARM.getCurrentPosition());
             telemetry.addData("BARN", pidBARN.getPosition());
-            telemetry.addData("BARN/1425.1", motorBARN.getCurrentPosition()/1425.1);
+            //telemetry.addData("BARN/1425.1", motorBARN.getCurrentPosition()/1425.1);
             telemetry.addData("Field Centric", useFieldCentric);
-            telemetry.addData("barnS" ,sensorBARN.getState());
-            telemetry.addData("SlideS" ,sensorSlide.getState());
+            telemetry.addData("barnSensor" ,!sensorBARN.getState());
+            telemetry.addData("SlideSensor" ,!sensorSlide.getState());
             telemetry.update();
         }
     }
