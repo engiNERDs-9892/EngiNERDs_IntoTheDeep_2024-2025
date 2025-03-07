@@ -28,6 +28,7 @@ public class myConstants {
     public static int SLIDE_HIGH_CHAMBER_PLAY = 2960;
     public static final int FARM_UP = 10;
     public static final int FARM_DOWN = 345;
+    public static final int FARM_DOWN_B_TMP = 332;
     public static final int FARM_AUTO_SAMPLE_GRAB = 380-10;
     public static int FARM_AUTO_FRONT_SPECEMIN = 60;
     public static int BARN_UP = 0;
@@ -55,8 +56,8 @@ public class myConstants {
         public static final double CLAW_RIGHT_2_CLOSED = 0.465;
         public static final double CLAW_LEFT_2_LOOSE = 0.55;
         public static final double CLAW_RIGHT_2_LOOSE = 0.5;
-        public static final double WRIST_A = 0.5;
-        public static final double WRIST_B = 0.825;
+        public static final double WRIST_A = 0.5-0.03;
+        public static final double WRIST_B = 0.825-0.03;
 
     }
 }

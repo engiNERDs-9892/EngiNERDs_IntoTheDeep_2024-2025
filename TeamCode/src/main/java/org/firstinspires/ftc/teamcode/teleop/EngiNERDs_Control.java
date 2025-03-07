@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import static org.firstinspires.ftc.teamcode.myConstants.BARN_DOWN;
 import static org.firstinspires.ftc.teamcode.myConstants.BARN_UP;
+import static org.firstinspires.ftc.teamcode.myConstants.FARM_DOWN;
+import static org.firstinspires.ftc.teamcode.myConstants.FARM_DOWN_B_TMP;
+import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_TOP;
 
@@ -14,6 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.drive.VariableStorage;
+import org.firstinspires.ftc.teamcode.motorsController;
 import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.toggleButton;
@@ -24,6 +28,7 @@ public class EngiNERDs_Control extends myLinearOpMode {
     public static boolean useFieldCentric;
     public static boolean hangMode;
     public static boolean useMotorLimits;
+    public static boolean armHold;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -50,6 +55,19 @@ public class EngiNERDs_Control extends myLinearOpMode {
                 motorRR.setPower(0);
             }
         };
+        toggleButton armToggle = new toggleButton() {
+            @Override
+            public void toggleOn() {
+                armHold = true;
+                pidFARM.setTarget(FARM_UP);
+            }
+
+            @Override
+            public void toggleOff() {
+                armHold = true;
+                pidFARM.setTarget(FARM_DOWN_B_TMP);
+            }
+        };
         toggleServo clawLeftToggle = new toggleServo(servoClawLeft, myConstants.servoPositions.CLAW_LEFT_OPEN, myConstants.servoPositions.CLAW_LEFT_CLOSED);
         toggleServo clawRightToggle = new toggleServo(servoClawRight, myConstants.servoPositions.CLAW_RIGHT_OPEN, myConstants.servoPositions.CLAW_RIGHT_CLOSED);
         toggleServo clawLeft2Toggle = new toggleServo(servoClawLeft2, myConstants.servoPositions.CLAW_LEFT_2_OPEN, myConstants.servoPositions.CLAW_LEFT_2_CLOSED);
@@ -57,6 +75,7 @@ public class EngiNERDs_Control extends myLinearOpMode {
         toggleServo wristToggle = new toggleServo(servoWrist, myConstants.servoPositions.WRIST_A, myConstants.servoPositions.WRIST_B);
         ElapsedTime loopTimer = new ElapsedTime();
         double loopTime;
+        pidFARM.setPID(0.003, motorsController.I, motorsController.D);
         if(!VariableStorage.hasRunOpmode){
             VariableStorage.hasRunOpmode = true;
             motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -108,12 +127,14 @@ public class EngiNERDs_Control extends myLinearOpMode {
             if (gamepad1.right_bumper) {
                 denominator *= 3;
             }
+            /*
             if (gamepad1.x) {
                 useFieldCentric = true;
             }
             if (gamepad1.y) {
                 useFieldCentric = false;
             }
+             */
             if (gamepad1.back) {
                 odo.resetPosAndIMU();
             }
@@ -131,14 +152,21 @@ public class EngiNERDs_Control extends myLinearOpMode {
             double farmTarget = pidFARM.getTarget();//Unused
             double farmStick = gamepad2.left_stick_y;
             double barnStick = -gamepad2.right_stick_y;
-            double slideStick = gamepad2.right_trigger-gamepad2.left_trigger;
-            if(farmStick != 0 || (motorFARM.getCurrentPosition() < 320 && !sensorSlide.getState())){
-                motorFARM.setPower(
-                        farmStick*0.4 +
-                        -0.2*sin(motorFARM.getCurrentPosition()*myConstants.FARM_RADIANS_PER_TICK)
-                );
-            } else {
-                motorFARM.setPower(0);
+            double slideStick = gamepad2.right_trigger - gamepad2.left_trigger;
+            if (farmStick != 0) {
+                armHold = false;
+            }
+            if (armHold) {
+                pidFARM.update();
+            }else{
+                if (farmStick != 0 || (motorFARM.getCurrentPosition() < 320 && !sensorSlide.getState())) {
+                    motorFARM.setPower(
+                            farmStick * 0.3 +
+                                    -0.2 * sin(motorFARM.getCurrentPosition() * myConstants.FARM_RADIANS_PER_TICK)
+                    );
+                } else {
+                    motorFARM.setPower(0);
+                }
             }
 
             if(!sensorBARN.getState()){
@@ -173,6 +201,7 @@ public class EngiNERDs_Control extends myLinearOpMode {
             clawRightToggle.update(gamepad2.a || gamepad1.a);
             clawLeft2Toggle.update(gamepad2.y);
             clawRight2Toggle.update(gamepad2.y);
+            armToggle.update(gamepad2.b);
 
             wristToggle.update(gamepad2.x);
             //

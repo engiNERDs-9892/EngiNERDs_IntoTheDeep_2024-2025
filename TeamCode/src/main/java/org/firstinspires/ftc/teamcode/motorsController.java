@@ -56,6 +56,9 @@ public class motorsController {
 
     public void setActive(boolean active) {
         isActive = active;
+        if(!isActive){
+            setPower(0);
+        }
     }
 
     public void setTarget(double target) {
