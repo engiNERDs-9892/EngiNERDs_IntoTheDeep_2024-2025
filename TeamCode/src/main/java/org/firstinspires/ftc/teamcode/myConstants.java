@@ -52,8 +52,8 @@ public class myConstants {
 
         public static final double CLAW_LEFT_2_OPEN = 0.8;
         public static final double CLAW_RIGHT_2_OPEN = 0.8;
-        public static final double CLAW_LEFT_2_CLOSED = 0.465;
-        public static final double CLAW_RIGHT_2_CLOSED = 0.465;
+        public static final double CLAW_LEFT_2_CLOSED = 0.46;
+        public static final double CLAW_RIGHT_2_CLOSED = 0.46;
         public static final double CLAW_LEFT_2_LOOSE = 0.55;
         public static final double CLAW_RIGHT_2_LOOSE = 0.5;
         public static final double WRIST_A = 0.5-0.03;

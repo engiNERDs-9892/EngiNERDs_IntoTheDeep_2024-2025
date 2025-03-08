@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -17,16 +19,22 @@ public class motorsController {
     private String telemetryName;
     private boolean isActive;
     private DcMotor[] motors;
+    private DigitalChannel zeroSwitch;
     private int offset; // Offset for encoder values
     private double target;
 
-    public void setArmFactors(double armFactor, double armFactor2) {
+    public void setArmFactors(double armFactor, double armFactor2, double armFactor3) {
         this.armFactor = armFactor;
         this.armFactor2 = armFactor2;
+        this.armFactor3 = armFactor3;
+    }
+    public void setZeroSwitch(DigitalChannel zeroSwitch){
+        this.zeroSwitch = zeroSwitch;
     }
 
     private double armFactor;
     private double armFactor2;
+    private double armFactor3;
 
     public boolean isActive() {
         return isActive;
@@ -47,6 +55,9 @@ public class motorsController {
     }
 
     public int getPosition() {
+        if(zeroSwitch != null && !zeroSwitch.getState()){
+            return 0;
+        }
         return getCurrentPosition() + offset;
     }
 
@@ -110,7 +121,13 @@ public class motorsController {
             int motorPosition = getPosition();
             double pid = controller.calculate(motorPosition, target);
 
-            setPower(pid);
+            if(zeroSwitch != null && target == 0 && getPosition() < 0 && zeroSwitch.getState()){
+                pid += 0.2;
+            }
+            if(zeroSwitch != null && !zeroSwitch.getState() && target == 0){
+                pid = 0;
+            }
+            setAdjustedPower(pid);
 
             if (useTelemetry) {
                 // Telemetry making sure that everything is running as it should
@@ -118,6 +135,9 @@ public class motorsController {
                 telemetry.addData(telemetryName + " pid", pid);
                 telemetry.addData(telemetryName + " Target Pos", target);
             }
+        }
+        if(zeroSwitch != null && !zeroSwitch.getState()){
+            setPosition(0);
         }
     }
 
@@ -130,7 +150,7 @@ public class motorsController {
     public void setAdjustedPower(double power) {
         double adjustedPower = power;
         if (armFactor != 0) {
-            adjustedPower += armFactor * Math.cos(getPosition() * armFactor2 + 0.0);
+            adjustedPower += armFactor * Math.cos(getPosition() * armFactor2 + armFactor3);
         }
         setPower(adjustedPower);
     }

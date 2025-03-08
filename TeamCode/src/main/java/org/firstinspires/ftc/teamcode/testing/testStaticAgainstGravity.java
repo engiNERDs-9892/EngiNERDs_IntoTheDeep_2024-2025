@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -26,7 +24,7 @@ public class testStaticAgainstGravity extends myLinearOpMode {
         VoltageSensor volageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
         telemetry.addData("motorPosition", pidBARN.getPosition());
         telemetry.update();
-        pidBARN.setArmFactors(0.02, 0.004408f);
+        pidBARN.setArmFactors(0.02, 0.004408f, 0);
         waitForStart();
         while(opModeIsActive()){
             //1,425.1 PPR at the Output Shaft

@@ -47,7 +47,8 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         motorBARN.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //PID stuff
         lift2.setPID(0.003, motorsController.I, motorsController.D);
-        pidBARN.setArmFactors(0.02, 0.004408f);
+        pidBARN.setZeroSwitch(sensorBARN);
+        //pidBARN.setArmFactors(0.02, 0.004408f);
         VariableStorage.hasRunOpmode = true;
 
         //Trajectories
@@ -67,7 +68,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
                 .back(4)
                 .addTemporalMarker(this::openClaw2)
                 .back(10)
-                .addTemporalMarker(() -> pidFARM.setTarget(BARN_UP))
+                .addTemporalMarker(() -> pidBARN.setTarget(BARN_UP))
                 .splineToConstantHeading(new Vector2d(0.5, -30), Math.toRadians(180))
 
                 .build();
@@ -95,11 +96,13 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
                 .setReversed(false)
                 .waitSeconds(0.1)
                 .back(60)
-                .forward(60)
+                //.forward(60)
                 //.splineToConstantHeading(new Vector2d(72, -59), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(79, -76), Math.toRadians(280))
                 .waitSeconds(0.1)
                 .back(60)
+                .addTemporalMarker(()->{pidBARN.setTarget(BARN_UP);})
+                //.splineToConstantHeading(new Vector2d(0.5, -30), Math.toRadians(180))
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPush = drive.trajectorySequenceBuilder(trajectoryPush.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
@@ -120,6 +123,8 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
 
         pidBARN.useTelemetry(telemetry, "pidBARN");
 
+
+        //
         drive.followTrajectorySequenceAsync(trajectoryPlayPreload);
         updateEverything();
         lift2.setTarget(SLIDE_AUTO_FRONT_SPECEMIN_PLAY);

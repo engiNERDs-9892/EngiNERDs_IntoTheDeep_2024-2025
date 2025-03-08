@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import static org.firstinspires.ftc.teamcode.myConstants.BARN_DOWN;
 import static org.firstinspires.ftc.teamcode.myConstants.BARN_UP;
-import static org.firstinspires.ftc.teamcode.myConstants.FARM_DOWN;
 import static org.firstinspires.ftc.teamcode.myConstants.FARM_DOWN_B_TMP;
 import static org.firstinspires.ftc.teamcode.myConstants.FARM_UP;
 import static org.firstinspires.ftc.teamcode.myConstants.SLIDE_BOTTOM;
@@ -75,7 +74,9 @@ public class EngiNERDs_Control extends myLinearOpMode {
         toggleServo wristToggle = new toggleServo(servoWrist, myConstants.servoPositions.WRIST_A, myConstants.servoPositions.WRIST_B);
         ElapsedTime loopTimer = new ElapsedTime();
         double loopTime;
-        pidFARM.setPID(0.003, motorsController.I, motorsController.D);
+        pidFARM.setPID(0.003, motorsController.I+0.002, 0.0002);
+        pidFARM.setArmFactors(0.10, myConstants.FARM_RADIANS_PER_TICK, Math.toRadians(99));
+        pidFARM.useTelemetry(telemetry, "pidFARM");
         if(!VariableStorage.hasRunOpmode){
             VariableStorage.hasRunOpmode = true;
             motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -122,10 +123,16 @@ public class EngiNERDs_Control extends myLinearOpMode {
             double motorBRPower = (rotY + rotX - r);
             denominator *= 1.0;
             if (gamepad1.left_bumper) {
-                denominator *= 2;
+                denominator *= 1.6;
             }
             if (gamepad1.right_bumper) {
-                denominator *= 3;
+                denominator *= 2.5;
+            }
+            if (gamepad2.left_bumper) {
+                denominator *= 1.6;
+            }
+            if (gamepad2.right_bumper) {
+                denominator *= 2.5;
             }
             /*
             if (gamepad1.x) {
@@ -159,13 +166,15 @@ public class EngiNERDs_Control extends myLinearOpMode {
             if (armHold) {
                 pidFARM.update();
             }else{
-                if (farmStick != 0 || (motorFARM.getCurrentPosition() < 320 && !sensorSlide.getState())) {
-                    motorFARM.setPower(
-                            farmStick * 0.3 +
-                                    -0.2 * sin(motorFARM.getCurrentPosition() * myConstants.FARM_RADIANS_PER_TICK)
-                    );
+                if (farmStick != 0 || motorFARM.getCurrentPosition() < 320 || sensorSlide.getState()) {
+                    //motorFARM.setPower(
+                    //        farmStick * 0.3 +
+                    //                -0.2 * sin(motorFARM.getCurrentPosition() * myConstants.FARM_RADIANS_PER_TICK)
+                    //);
+                    pidFARM.setAdjustedPower(farmStick * 0.3);
                 } else {
-                    motorFARM.setPower(0);
+                    //motorFARM.setPower(0);
+                    pidFARM.setPower(0);
                 }
             }
 
