@@ -61,7 +61,7 @@ public class motorsController {
         return getCurrentPosition() + offset;
     }
 
-    private int getCurrentPosition() {
+    public int getCurrentPosition() {///private
         return motors[0].getCurrentPosition();
     }
 

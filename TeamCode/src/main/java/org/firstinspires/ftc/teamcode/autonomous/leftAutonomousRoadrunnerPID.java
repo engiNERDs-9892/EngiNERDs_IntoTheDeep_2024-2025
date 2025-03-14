@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.opModeGroups;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Autonomous(group = opModeGroups.auto.ADVANCED, preselectTeleOp = DEFAULT_TELEOP)
+@Autonomous(group = opModeGroups.auto.ADVANCED, preselectTeleOp = DEFAULT_TELEOP, name="Left Auto (Sample)")
 public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
     SampleMecanumDrive drive;
     @Override
@@ -29,8 +29,8 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
-        servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
-        servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
+        servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
+        servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
 
         motorFARM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBARN.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -42,7 +42,7 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
         VariableStorage.hasRunOpmode = true;
         motorFARM.setTargetPosition(myConstants.FARM_UP);
         motorFARM.setPower(0.4);
-        servoWrist.setPosition(servoPositions.WRIST_B);
+        servoWrist.setPosition(servoPositions.WRIST_A);
         lift.setActive(true);
         final Vector2d basketPosition = new Vector2d(-0.5, 35.25);
         final Vector2d sample1PickupPosition = new Vector2d(57.75, 2.25);
@@ -215,9 +215,9 @@ public class leftAutonomousRoadrunnerPID extends myLinearOpMode {
                 //    motorFARM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //})
                 .build();
-        waitForStart();
-
+        waitForStart(); // waitForStart();
         if (isStopRequested()) return;
+        servoWrist.setPosition(servoPositions.WRIST_B);
         motorBARN.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ElapsedTime timer = new ElapsedTime();
         motorFARM.setMode(DcMotor.RunMode.RUN_TO_POSITION);

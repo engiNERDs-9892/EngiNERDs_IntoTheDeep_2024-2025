@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.opModeGroups;
 
-@Autonomous(group = opModeGroups.auto.ADVANCED, preselectTeleOp = DEFAULT_TELEOP)
+@Autonomous(group = opModeGroups.auto.ADVANCED, preselectTeleOp = DEFAULT_TELEOP, name = "Right Auto (Specimen)")
 public class rightAutonomousSpecemin2 extends myLinearOpMode {
     SampleMecanumDrive drive;
 
@@ -35,8 +35,8 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         super.runOpMode();//Initialization
         drive = new SampleMecanumDrive(hardwareMap, 0.3);
         //Servos
-        servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_OPEN);
-        servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_OPEN);
+        servoClawLeft2.setPosition(servoPositions.CLAW_LEFT_2_CLOSED);
+        servoClawRight2.setPosition(servoPositions.CLAW_RIGHT_2_CLOSED);
         servoClawLeft.setPosition(servoPositions.CLAW_LEFT_CLOSED);
         servoClawRight.setPosition(servoPositions.CLAW_RIGHT_CLOSED);
         servoWrist.setPosition(servoPositions.WRIST_A);
@@ -134,7 +134,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
         updateEverything(300);
         lift2.setTarget(SLIDE_BOTTOM);
         pidFARM.setTarget(FARM_UP);
-
+        openClaw2();
         drive.followTrajectorySequenceAsync(trajectoryPush);
         updateEverything();
         //updateEverything(30000);

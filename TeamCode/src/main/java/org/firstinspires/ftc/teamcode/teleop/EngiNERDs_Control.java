@@ -12,8 +12,10 @@ import static java.lang.Math.sin;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.drive.VariableStorage;
 import org.firstinspires.ftc.teamcode.motorsController;
@@ -171,7 +173,7 @@ public class EngiNERDs_Control extends myLinearOpMode {
                     //        farmStick * 0.3 +
                     //                -0.2 * sin(motorFARM.getCurrentPosition() * myConstants.FARM_RADIANS_PER_TICK)
                     //);
-                    pidFARM.setAdjustedPower(farmStick * 0.3);
+                    pidFARM.setPower(farmStick * 0.5);
                 } else {
                     //motorFARM.setPower(0);
                     pidFARM.setPower(0);
@@ -217,12 +219,19 @@ public class EngiNERDs_Control extends myLinearOpMode {
             //telemetry.addData("Lifty", motorLL.getCurrentPosition());
             //telemetry.addData("Risey", motorRR.getCurrentPosition());
             telemetry.addData("Slide", lift2.getPosition());
+            telemetry.addData("Slide", lift2.getCurrentPosition());
+            telemetry.addData("Slide", lift2.getCurrentPosition());
+
             telemetry.addData("FARM", motorFARM.getCurrentPosition());
             telemetry.addData("BARN", pidBARN.getPosition());
             //telemetry.addData("BARN/1425.1", motorBARN.getCurrentPosition()/1425.1);
             telemetry.addData("Field Centric", useFieldCentric);
             telemetry.addData("barnSensor" ,!sensorBARN.getState());
             telemetry.addData("SlideSensor" ,!sensorSlide.getState());
+            telemetry.addData("LLpower", motorLL.getPower());
+            telemetry.addData("LLcurrent", ((DcMotorEx)motorLL).getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("RRpower", motorRR.getPower());
+            telemetry.addData("RRcurrent", ((DcMotorEx)motorRR).getCurrent(CurrentUnit.AMPS));
             telemetry.update();
         }
     }
