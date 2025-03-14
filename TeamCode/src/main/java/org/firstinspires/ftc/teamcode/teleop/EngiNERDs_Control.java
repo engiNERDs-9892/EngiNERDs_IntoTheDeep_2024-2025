@@ -220,7 +220,6 @@ public class EngiNERDs_Control extends myLinearOpMode {
             //telemetry.addData("Risey", motorRR.getCurrentPosition());
             telemetry.addData("Slide", lift2.getPosition());
             telemetry.addData("Slide", lift2.getCurrentPosition());
-            telemetry.addData("Slide", lift2.getCurrentPosition());
 
             telemetry.addData("FARM", motorFARM.getCurrentPosition());
             telemetry.addData("BARN", pidBARN.getPosition());

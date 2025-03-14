@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.drive.VariableStorage;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.motorsController;
+import org.firstinspires.ftc.teamcode.myConstants;
 import org.firstinspires.ftc.teamcode.myConstants.servoPositions;
 import org.firstinspires.ftc.teamcode.myLinearOpMode;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -53,7 +54,7 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
 
         //Trajectories
         TrajectorySequence trajectoryPlayPreload = drive.trajectorySequenceBuilder(new Pose2d())
-                .lineToConstantHeading(new Vector2d(38, 6))
+                .lineToConstantHeading(new Vector2d(39, 6))
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPreload = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
@@ -77,10 +78,24 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
                 .lineToConstantHeading(new Vector2d(12, -10))
                 .splineToConstantHeading(new Vector2d(47, 8+3), 0)
                 .build();
-        TrajectorySequence trajectoryPlaySpecemin3_2 = drive.trajectorySequenceBuilder(trajectoryPlaySpecemin3.end())
+        TrajectorySequence trajectoryPlaySpecemin3_2_ = drive.trajectorySequenceBuilder(trajectoryPlaySpecemin3.end())
                 .back(4)
                 .addTemporalMarker(this::openClaw2)
                 .back(10)
+                //Start to park
+
+                //.addTemporalMarker(()->{
+                //    pidFARM.setTarget(myConstants.FARM_AUTO_SAMPLE_GRAB);
+                //    lift2.setTarget(myConstants.SLIDE_AUTO_SAMPLE_GRAB);
+                //    openClaw1();
+                //})
+                //.splineToConstantHeading(new Vector2d(33+12, -77), Math.toRadians(270))
+
+                .splineToSplineHeading(new Pose2d(33+12, -77, Math.toRadians(270)), Math.toRadians(180))
+                .strafeRight(60)
+                .addTemporalMarker(()->{
+                    closeClaw1();
+                })
                 .build();
 
         TrajectorySequence trajectoryPush = drive.trajectorySequenceBuilder(trajectoryPlayPreload.end())
@@ -96,13 +111,9 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
                 .setReversed(false)
                 .waitSeconds(0.1)
                 .back(60)
-                //.forward(60)
-                //.splineToConstantHeading(new Vector2d(72, -59), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(79, -76), Math.toRadians(280))
-                .waitSeconds(0.1)
-                .back(60)
-                .addTemporalMarker(()->{pidBARN.setTarget(BARN_UP);})
-                //.splineToConstantHeading(new Vector2d(0.5, -30), Math.toRadians(180))
+                .build();
+        TrajectorySequence trajectoryPark =drive.trajectorySequenceBuilder(trajectoryPlaySpecemin3_2_.end())
+                .lineToLinearHeading(new Pose2d(0.5, -50, Math.toRadians(270)))
                 .build();
         TrajectorySequence trajectoryGrabSpeceminFromPush = drive.trajectorySequenceBuilder(trajectoryPush.end())
                 //.setVelConstraint(SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH))
@@ -155,16 +166,21 @@ public class rightAutonomousSpecemin2 extends myLinearOpMode {
 
 
         pidBARN.setTarget(BARN_UP);
-        updateEverything(500);
+            updateEverything(500);
         closeClaw2();
-        updateEverything(300);
+            updateEverything(300);
         pidBARN.setTarget(BARN_DOWN);
         drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin3);
-        updateEverything();
+            updateEverything();
         pidBARN.setTarget(BARN_HIGH_CHAMBER-60);//Compensate for current lack of a feedforward term
-        updateEverything(500);
-        drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin3_2);
-        updateEverything();
+            updateEverything(500);
+        drive.followTrajectorySequenceAsync(trajectoryPlaySpecemin3_2_);
+            updateEverything();
+        pidFARM.setTarget(FARM_UP);
+        lift2.setTarget(SLIDE_BOTTOM);
+        drive.followTrajectorySequenceAsync(trajectoryPark);
+            updateEverything();
+
         //DONE
         telemetry.addData("Time", timer.seconds());
         telemetry.update();
